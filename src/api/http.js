@@ -9,8 +9,8 @@ const http = axios.create({
     baseURL: import.meta.env.VITE_APP_API_URL
 });
 
-// Server에 소스 올리고 테스트 해봐야함
-if(import.meta.env.MODE === 'development'){
+// Local인 경우 mock 데이터 응답
+if(import.meta.env.MODE === 'L'){
      console.log('%c This is Mock Mode!','color:red');
      setupMock(new MockAdapter(http));
 

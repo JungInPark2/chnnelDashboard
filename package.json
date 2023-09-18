@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite --mode D",
+    "dev": "vite --mode L",
     "build:dev": "vite build --mode D",
     "build:staging": "vite build --mode T",
     "build:prod": "vite build --mode P",
