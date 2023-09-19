@@ -1,0 +1,71 @@
+import http from "./http";
+
+const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, csno) => {
+    try {
+        const response = await http.post('/logs-transaction-channel/_search', {
+            size: 10000,
+            _source: {
+                includes: "hc.transaction.common"
+            },
+            fields: [
+                "@timestamp",
+                "hc.guid.fst",
+                "hc.guid.now",
+                "related.ip",
+                "hc.csno",
+                "event.category",
+                "message"
+            ],
+            sort: [
+                {
+                    "@timestamp": {
+                        "order": "desc"
+                    }
+                }
+            ],
+            query: {
+                bool: {
+                    filter: [
+                        {
+                            range: {
+                                "@timestamp": {
+                                    "gte": gteDttm,
+                                    "lte": lteDttm
+                                }
+                            }
+                        },
+                        {
+                            terms: {
+                                "hc.service.name": [serviceName]
+                            }
+                        },
+                        {
+                            terms: {
+                                "hc.guid.now": [guid]
+                            }
+                        },
+                        {
+                            terms: {
+                                "related.ip": [ipAddress]
+                            }
+                        },
+                        {
+                            terms: {
+                                "hc.csno": [csno]
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+        
+        return response.data;
+    } catch (error) {
+        console.error('API 요청 중 오류 발생:', error);
+        throw error;
+    }
+}
+
+export {
+    searchXmpLogInfo
+}

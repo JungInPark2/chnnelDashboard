@@ -1,9 +1,10 @@
 <script setup>
+import XmpLog from '@/components/xmpLog/XmpLog.vue';
 
 </script>
 
 <template>
   <main>
-    채널 통합 대시보드 컴포넌트 Test.
+    <xmp-log></xmp-log>
   </main>
 </template>
