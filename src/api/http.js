@@ -6,7 +6,8 @@ const http = axios.create({
     headers: {
         'Content-type': 'application/json',
     },
-    baseURL: import.meta.env.VITE_APP_API_URL
+    baseURL: import.meta.env.VITE_APP_API_URL,
+    timeout:30000    // 타임아웃 설정 (30초)
 });
 
 // Local인 경우 mock 데이터 응답
