@@ -1,1 +1,1 @@
-VITE_APP_API_URL=http://aa.aa.aa.aa
+VITE_APP_API_URL=http://10.211.5.97:9200/

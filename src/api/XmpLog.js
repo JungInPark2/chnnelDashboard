@@ -4,14 +4,12 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
     try {
         const response = await http.post('/logs-transaction-channel/_search', {
             size: 10000,
-            _source: {
-                includes: "hc.transaction.common"
-            },
+            _source: false,
             fields: [
                 "@timestamp",
                 "hc.guid.fst",
                 "hc.guid.now",
-                "related.ip",
+                "hc.transaction.common.TRM_IPAD",
                 "hc.csno",
                 "event.category",
                 "message"
@@ -19,7 +17,7 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
             sort: [
                 {
                     "@timestamp": {
-                        "order": "desc"
+                        "order": "asc"
                     }
                 }
             ],
@@ -46,7 +44,7 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
                         },
                         {
                             terms: {
-                                "related.ip": [ipAddress]
+                                "hc.transaction.common.TRM_IPAD": [ipAddress]
                             }
                         },
                         {
@@ -61,8 +59,14 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
         
         return response.data;
     } catch (error) {
-        console.error('API 요청 중 오류 발생:', error);
-        throw error;
+        // 타임아웃 에러 처리
+        if (error.code === 'ECONNABORTED') {
+            console.error('API 타임아웃');
+            throw new Error('API 타임아웃');
+        } else {
+            console.error('API 요청 중 오류 발생:', error);
+            throw error;
+        }
     }
 }
 
