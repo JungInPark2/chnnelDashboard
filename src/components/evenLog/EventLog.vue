@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 
-const customer = ref(null);
+const eventList = ref(null);
 const filters = ref(null);
 const serverType = ref('');
 const startDate = ref(null);
@@ -15,7 +15,7 @@ const serverTypes = ref([
 
 // 추가
 const instanceValues = ref([
-		{ name: '전체', code: 'ALL' },
+	{ name: '전체', code: 'ALL' },
     { name: 'mx21', code: 'mx21' },
     { name: 'mx22', code: 'mx22' },
     { name: 'mx23', code: 'mx23' },
@@ -26,13 +26,27 @@ const instanceValues = ref([
 const instanceValue = ref('ALL');
 
 onBeforeMount(() => {
-	fetch('demo/customers-large.json')
+	  fetch('demo/customers-large.json')
 		.then((res) => res.json())
 		.then((d) => {
-		customer.value = d.data;
-		loading.value = false;
-		customer.value.forEach((customer) => (customer.date = new Date(customer.date)));
-	})
+			eventList.value = d.hits.hits;
+			loading.value = false;
+
+			eventList.value.forEach((event) => {
+				event.value = event._source;
+
+				//필드 안내려오는건 validation 체크 어떤게 좋을 지 고민 
+				event.duration = event.value.hc ? event.value.hc.api.duration : '';
+				event.host = event.value.agent ? event.value.agent.name : '';
+				event.ip = event.value.source ? event.value.source.ip : '';
+				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
+				event.csno = event.value.event ? event.value.event.req.message.csno : '';
+				event.req = event.value.hc && event.value.hc.event ? event.value.hc.event.req : '';
+				event.res = event.value.hc && event.value.hc.event ? event.value.hc.event.res : '';
+				event.device = event.value.hc && event.value.hc.device ? event.value.hc.device.info : '';
+			});
+		})
+
 	initFilters();
 });
 
@@ -73,12 +87,10 @@ const search = () => {
           </div>
 					<div class="grid p-fluid">
             <div class="col-12 md:col-3">
-              <h5>조회 시작일</h5>
-              <Calendar :showIcon="true" :showButtonBar="true" v-model="startDate"></Calendar>
+              <Calendar :showIcon="true" :showButtonBar="true" v-model="startDate" placeholder="조회 시작일"></Calendar>
             </div>
             <div class="col-2 md:col-3">
-              <h5>조회 종료일</h5>
-              <Calendar :showIcon="true" :showButtonBar="true" v-model="endDate"></Calendar>
+              <Calendar :showIcon="true" :showButtonBar="true" v-model="endDate" placeholder="조회 종료일"></Calendar>
             </div>
 					</div>
           <div class="grid p-fluid">
@@ -112,7 +124,7 @@ const search = () => {
 		<div class="col-12">
 			<div class="card">
 				<DataTable
-					:value="customer"
+					:value="eventList"
 					:paginator="true"
 					class="p-datatable-gridlines"
 					:rows="20"
@@ -129,42 +141,52 @@ const search = () => {
 					<template #loading> Loading data.. Please wait. </template>
 					<Column field="응답시간" header="응답 시간" dataType="date" style="min-width: 12rem">
 						<template #body="{ data }">
-							{{ data.name }}
+							{{ data.duration }}
 						</template>
 					</Column>
 					<Column header="instance" filterField="instance" style="min-width: 12rem">
 						<template #body="{ data }">
-							{{ data.date }}
+							{{ data.host }}
 						</template>
 					</Column>
 					<Column header="클라이언트 IP" filterField="클라이언트 IP" :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="min-width: 14rem">
 						<template #body="{ data }">
-							{{ data.status }}
+							{{ data.ip }}
 						</template>
 					</Column>
 					<Column header="고객번호" filterField="고객번호" dataType="date" style="min-width: 10rem">
 						<template #body="{ data }">
-							{{ data.id }}
+							{{ data.csno }}
 						</template>
 					</Column>
 					<Column header="os명" filterField="os명" dataType="numeric" style="min-width: 10rem">
 						<template #body="{ data }">
-							{{ data.country.name }}
+							{{ data.device }}
 						</template>
 					</Column>
-					<Column field="API명" header="API명" :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
+					<Column field="API명" header="API명" style="min-width: 12rem">
 						<template #body="{ data }">
-							{{ data.name }}
+							{{ data.api }}
+						</template>
+					</Column>
+					<Column field="소요시간" header="소요시간"  style="min-width: 12rem">
+									<template #body="{ data }">
+										{{ data.duration }}
+									</template>
+								</Column>
+					<Column field="결과코드" header="결과코드" style="min-width: 8rem">
+						<template #body="{ data }">
+							{{ data.return_code }}
 						</template>
 					</Column>
 					<Column field="request" header="request" :showFilterMatchModes="false" style="min-width: 12rem">
 						<template #body="{ data }">
-							{{ data.name }}
+							{{ data.req }}
 						</template>
 					</Column>
 					<Column field="response" header="response" bodyClass="text-center" style="min-width: 8rem">
 						<template #body="{ data }">
-							{{ data.name }}
+							{{ data.res }}
 						</template>
 					</Column>
 				</DataTable>
