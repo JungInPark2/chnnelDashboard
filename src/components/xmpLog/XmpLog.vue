@@ -86,18 +86,30 @@ const fetchData = async () => {
     
     // API 응답에서 필요한 데이터 추출
     try{
-        iqryCn.value = apiResponse.value.hits.hits.map(hit => ({
-        dttm: hit.fields["@timestamp"] ? hit.fields["@timestamp"][0] : '',
-        guid: hit.fields["hc.guid.fst"] ? hit.fields["hc.guid.fst"][0] : '',
-        ipAddress: hit.fields["hc.transaction.common.TRM_IPAD"] ? hit.fields["hc.transaction.common.TRM_IPAD"].join(', ') : '',
-        csno: hit.fields["hc.csno"] ? hit.fields["hc.csno"][0] : '',
-        sarClsf: hit.fields["event.category"] ? hit.fields["event.category"][0] : '',
-        xmpLog: hit.fields["message"] ? hit.fields["message"][0] : ''
-    }));
-
-    }catch(error){
-        errorMessage.value = "데이터 조회 중 오류가 발생하였습니다.";
-    }
+        iqryCn.value = apiResponse.value.hits.hits.map(hit => {
+            let formattedDttm = '',
+                originalDttm = hit.fields["@timestamp"] ? hit.fields["@timestamp"][0] : '';
+            
+            if (originalDttm) {
+                try {
+                    const dateObj = new Date(originalDttm);
+                    formattedDttm = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')} ${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}:${String(dateObj.getSeconds()).padStart(2, '0')}`;
+                } catch (dateError) {
+                    formattedDttm = originalDttm;
+                }
+            }
+            return {
+                dttm: formattedDttm,
+                guid: hit.fields["hc.guid.fst"] ? hit.fields["hc.guid.fst"][0] : '',
+                ipAddress: hit.fields["hc.transaction.common.TRM_IPAD"] ? hit.fields["hc.transaction.common.TRM_IPAD"].join(', ') : '',
+                csno: hit.fields["hc.csno"] ? hit.fields["hc.csno"][0] : '',
+                sarClsf: hit.fields["event.category"] ? hit.fields["event.category"][0] : '',
+                xmpLog: hit.fields["message"] ? hit.fields["message"][0] : ''
+            };
+        });
+        } catch(error) {
+            errorMessage.value = "데이터 조회 중 오류가 발생하였습니다.";
+        }
     
     loading.value = false
 };
