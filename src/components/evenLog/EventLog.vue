@@ -1,21 +1,15 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-
-const eventList = ref(null);
-const filters = ref(null);
-const serverType = ref('');
-const startDate = ref(null);
-const endDate = ref(null);
-const loading = ref(false);
+import JsonViewer from 'vue-json-viewer';
 
 const serverTypes = ref([
+		{ name: '전체', code: 'ALL' },
     { name: 'MX', code: 'MX' },
     { name: '앱카드', code: 'APPCARD' }
 ]);
 
-// 추가
+// TODO 추가
 const instanceValues = ref([
-	{ name: '전체', code: 'ALL' },
     { name: 'mx21', code: 'mx21' },
     { name: 'mx22', code: 'mx22' },
     { name: 'mx23', code: 'mx23' },
@@ -23,7 +17,18 @@ const instanceValues = ref([
     { name: 'mx25', code: 'mx25' },
     { name: 'mx26', code: 'mx26' }
 ]);
-const instanceValue = ref('ALL');
+
+const serverType = ref(serverTypes.value[0]);
+const instanceValue = ref([]);
+const filters = ref(null);
+const startDate = ref(null);
+const endDate = ref(null);
+const csno = ref(null);
+const ip = ref(null);
+const eventList = ref(null);
+const loading = ref(false);
+const isInvalid = ref(false);
+const apiName = ref(null);
 
 onBeforeMount(() => {
 	  fetch('demo/customers-large.json')
@@ -57,68 +62,86 @@ const initFilters = () => {
 	};
 };
 
+const valid = () => {
+	
+	isInvalid.value = true;
+	
+	if(!serverType.value.code || instanceValue.value.length == 0 || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
+		loading.value = false;
+		return false;
+	}
+	return true;
+}
+
 const search = () => {
-    loading.value = true;
-		setTimeout(() => (loading.value = false), 1000);
 
-		//validation check
+	loading.value = true;
 
-		// 조회 API 호출
-		console.log('검색 조건 : ' + serverTypes.value.code +  ',' + startDate.value + ', ' + endDate.value);
+	if(!valid()) return;
 
-		// api 호출 후 loading.value = false
+	console.log('검색 조건:\n' + serverType.value.code, instanceValue.value, startDate.value , endDate.value, csno.value, ip.value, apiName);
+	//api request 요청 포맷 확인
+	setTimeout(() => (loading.value = false), 1000);
+	isInvalid.value = false;
 };
 
 </script>
 
 <template>
 		<div class="grid">
-				<div class="col-12">
+			<div class="col-12">
 				<div class="card">
-          <div class="grid p-fluid">
-              <div class="col-2 md:col-3">
-                <h5>시스템구분</h5>
-                  <Dropdown v-model="serverType" :options="serverTypes" optionLabel="name" placeholder="전체"/>
-              </div>
-              <div class="col-2 md:col-3">
-                <h5>instance</h5>
-                  <Dropdown v-model="instanceValue" :options="instanceValues" optionLabel="name" placeholder=" 전체"/>
-              </div>
-          </div>
 					<div class="grid p-fluid">
-            <div class="col-12 md:col-3">
-              <Calendar :showIcon="true" :showButtonBar="true" v-model="startDate" placeholder="조회 시작일"></Calendar>
-            </div>
-            <div class="col-2 md:col-3">
-              <Calendar :showIcon="true" :showButtonBar="true" v-model="endDate" placeholder="조회 종료일"></Calendar>
+						<div class="col-2 md:col-3">
+							<span class="p-float-label">
+								<Dropdown id = "serverType" v-model="serverType" :options="serverTypes" optionLabel="name" />
+								<label for="serverType">시스템구분</label>
+							</span>
+						</div>
+						<div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <MultiSelect id="multiselect" :options="instanceValues" v-model="instanceValue" optionLabel="name" :filter="false" :class="{ 'p-invalid': isInvalid && instanceValue.length == 0}" ></MultiSelect>
+                    <label for="multiselect">instance</label>
+                </span>
+								
             </div>
 					</div>
-          <div class="grid p-fluid">
-            <div class="col-12 md:col-3">
-                <span class="p-input-icon-left p-input-icon-right">
-                    <i class="pi pi-wifi" />
-                    <InputText type="text" placeholder="클라이언트 IP" />
-                    <i class="pi pi-search" />
-                </span>
-            </div>
-            <div class="col-12 mb-2 md:col-3">
-                <span class="p-input-icon-left p-input-icon-right">
-                    <i class="pi pi-user" />
-                    <InputText type="text" placeholder="고객번호" />
-                    <i class="pi pi-search" />
-                </span>
-            </div>
-            <div class="col-12 md:col-3">
-                <span class="p-input-icon-left p-input-icon-right">
-                    <InputText type="text" placeholder="API 명" />
-                    <i class="pi pi-search" />
-                </span>
-            </div>
-            <div class="col-12 md:col-3">
-              <Button type="button"  icon="pi pi-search" class="mr-2 mb-2" :loading="loading" @click="search()" />
-            </div>
+					<div class="grid p-fluid">
+						<div class="col-12 md:col-3">
+							<Calendar :showIcon="true" :showButtonBar="true" v-model="startDate" placeholder="조회 시작일" hourFormat="24" dateFormat="yy.mm.dd" :class="{ 'p-invalid': isInvalid && !startDate}"></Calendar>
 						</div>
-				</div>
+						<div class="col-2 md:col-3">
+							<Calendar :showIcon="true" :showButtonBar="true" v-model="endDate" placeholder="조회 종료일" hourFormat="24" dateFormat="yy.mm.dd" :class="{ 'p-invalid': isInvalid && !endDate}"></Calendar>
+						</div>
+					</div>
+					<div class="grid p-fluid">
+						<div class="col-12 md:col-3">
+							<span class="p-input-icon-left p-input-icon-right">
+									<i class="pi pi-wifi" />
+									<InputText type="text" placeholder="클라이언트 IP" v-model="ip" :class="{ 'p-invalid': isInvalid && !ip && !csno}"  />
+									<i class="pi pi-search" />
+							</span>
+							<small v-if="isInvalid && !ip && !csno" class="p-error" id="text-error">IP주소 또는 고객번호 중 하나 이상을 입력해주세요.</small>
+						</div>
+						<div class="col-12 md:col-3">
+							<span class="p-input-icon-left p-input-icon-right">
+									<i class="pi pi-user" />
+									<InputText type="text" placeholder="고객번호" v-model="csno" maxlength="10" v-on:input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '')" :class="{ 'p-invalid': isInvalid && !ip && !csno}" />
+									<i class="pi pi-search" />
+							</span>
+							<small v-if="isInvalid && !ip && !csno" class="p-error" id="text-error">IP주소 또는 고객번호 중 하나 이상을 입력해주세요.</small>
+						</div>
+						<div class="col-12 md:col-3">
+							<span class="p-input-icon-left p-input-icon-right">
+									<InputText type="text" placeholder="API명" v-model="apiName" />
+									<i class="pi pi-search" />
+							</span>
+						</div>
+						<div class="col-12 md:col-3">
+							<Button type="button"  icon="pi pi-search" class="mr-2 mb-2" :loading="loading" @click="search()" />
+						</div>
+					</div>
+			</div>
 		</div>
 
 		<div class="col-12">
@@ -137,56 +160,68 @@ const search = () => {
 					responsiveLayout="scroll"
 				>
 				
-					<template #empty> 결과가 없습니다. </template>
+					<template #empty>조회된 결과가 없습니다.</template>
 					<template #loading> Loading data.. Please wait. </template>
-					<Column field="응답시간" header="응답 시간" dataType="date" style="min-width: 12rem">
+					<Column field="응답시간" header="응답 시간" dataType="date" >
 						<template #body="{ data }">
 							{{ data.duration }}
 						</template>
 					</Column>
-					<Column header="instance" filterField="instance" style="min-width: 12rem">
+					<Column header="instance" filterField="instance" >
 						<template #body="{ data }">
 							{{ data.host }}
 						</template>
 					</Column>
-					<Column header="클라이언트 IP" filterField="클라이언트 IP" :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="min-width: 14rem">
+					<Column header="클라이언트 IP" filterField="클라이언트 IP" >
 						<template #body="{ data }">
 							{{ data.ip }}
 						</template>
 					</Column>
-					<Column header="고객번호" filterField="고객번호" dataType="date" style="min-width: 10rem">
+					<Column header="고객번호" filterField="고객번호">
 						<template #body="{ data }">
 							{{ data.csno }}
 						</template>
 					</Column>
-					<Column header="os명" filterField="os명" dataType="numeric" style="min-width: 10rem">
+					<Column header="os명" filterField="os명">
 						<template #body="{ data }">
 							{{ data.device }}
 						</template>
 					</Column>
-					<Column field="API명" header="API명" style="min-width: 12rem">
-						<template #body="{ data }">
-							{{ data.api }}
-						</template>
+					<Column field="API명" header="API명" style="min-width: 12rem" >
+							<template #body="{ data }" >
+								<div class="surface-overlay overflow-hidden text-overflow-ellipsis" style="width:200px">{{ data.api }}</div>
+							</template>
 					</Column>
-					<Column field="소요시간" header="소요시간"  style="min-width: 12rem">
+					<Column field="소요시간" header="소요시간" >
 									<template #body="{ data }">
 										{{ data.duration }}
 									</template>
 								</Column>
-					<Column field="결과코드" header="결과코드" style="min-width: 8rem">
+					<Column field="결과코드" header="결과코드">
 						<template #body="{ data }">
 							{{ data.return_code }}
 						</template>
 					</Column>
-					<Column field="request" header="request" :showFilterMatchModes="false" style="min-width: 12rem">
+					<Column field="request" header="request" >
 						<template #body="{ data }">
-							{{ data.req }}
+							<Accordion >
+								<AccordionTab header="보기">
+										<p class="line-height-3 m-0">
+											<json-viewer :value="data.req" copyable></json-viewer>
+										</p>
+								</AccordionTab>
+						</Accordion>
 						</template>
 					</Column>
-					<Column field="response" header="response" bodyClass="text-center" style="min-width: 8rem">
+					<Column field="response" header="response" >
 						<template #body="{ data }">
-							{{ data.res }}
+							<Accordion >
+								<AccordionTab header="보기">
+										<p class="line-height-3 m-0">
+											<json-viewer :value="data.res" copyable></json-viewer>
+										</p>
+								</AccordionTab>
+						</Accordion>
 						</template>
 					</Column>
 				</DataTable>
