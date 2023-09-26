@@ -46,7 +46,13 @@ const validateIqrySrtDttm = () => {
 };
 
 const validateIqryEndDttm = () => {
-    return iqryEndDttm.value ? true : '조회종료일시를 입력해주세요.';
+    if (!iqryEndDttm.value) {
+        return '조회종료일시를 입력해주세요.';
+    }else if(new Date(iqryEndDttm.value) < new Date(iqrySrtDttm.value)){
+        return '조회 종료일시는 조회 시작일시보다 뒤여야 합니다.';
+    }else{
+        return true;
+    }
 };
 
 const validateInputs = () => {
