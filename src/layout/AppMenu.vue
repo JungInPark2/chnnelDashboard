@@ -7,8 +7,8 @@ const model = ref([
     {
         label: 'Home',
         items: [{ label: '채널 대시보드', icon: 'pi pi-fw pi-home', to: '/' },
-                { label: '이벤트로그', icon: 'pi pi-fw pi-table', to: '/eventLog' },
-                { label: '전문로그', icon: 'pi pi-fw pi-table', to: '/xmpLog' },
+                { label: '이벤트로그', icon: 'pi pi-fw pi-file', to: '/eventLog' },
+                { label: '전문로그', icon: 'pi pi-fw pi-file', to: '/xmpLog' },
                 { label: 'common', icon: 'pi pi-fw pi-table', to: '/common' }
                ]
     },
