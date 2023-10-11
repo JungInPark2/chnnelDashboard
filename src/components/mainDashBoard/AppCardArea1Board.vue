@@ -1,80 +1,117 @@
 <script setup>
 import { onBeforeMount, reactive, ref, watch } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
-import { searchMainDashBoardInfo, TestInfo } from '@/api/MainDashBoard';
+
+let documentStyle = getComputedStyle(document.documentElement);
+let textColor = documentStyle.getPropertyValue('--text-color');
+let textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+let surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
 const { isDarkTheme } = useLayout();
+const authTypes = ref({});
+const payTypes = ref({});
+const pieOptions = ref({});
+const barOptions = ref({});
+
+const setColorOptions = () => {
+    documentStyle = getComputedStyle(document.documentElement);
+    textColor = documentStyle.getPropertyValue('--text-color');
+    textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+};
+
+const setChart = () => {
+
+  console.log('인증별 API호출 건수');
+
+  // TODO 인증 수 가져오기 
+  // ARS인증(auttr), 공인인증, fido인증, 카드비밀번호인증, cvv인증, sms인증, 결제비밀번호인증 
+  // aut010201 autct0101 autfd0102 authc0101 autmp0102 autpp0101 
+  authTypes.value = {
+    labels: ['ARS인증', '공인인증', 'fido인증', '카드비밀번호인증' ,'cvc인증', 'sms인증', '결제비밀번호인증'],
+    datasets: [
+        {
+            data: [200,250,340,234,21,234,444],
+            backgroundColor: [documentStyle.getPropertyValue('--cyan-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--primary-500'), documentStyle.getPropertyValue('--green-500'), 
+            documentStyle.getPropertyValue('--pink-500'), documentStyle.getPropertyValue('--teal-500'), documentStyle.getPropertyValue('--yellow-500')],
+            hoverBackgroundColor: [documentStyle.getPropertyValue('--cyan-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--primary-400'), documentStyle.getPropertyValue('--green-400'), 
+            documentStyle.getPropertyValue('--pink-400'), documentStyle.getPropertyValue('--teal-400'), documentStyle.getPropertyValue('--yellow-400')]
+        }
+    ]
+  };
+
+  pieOptions.value = {
+      plugins: {
+          legend: {
+              labels: {
+                  usePointStyle: true,
+                  color: textColor
+              }
+          }
+      }
+  };
+
+  payTypes.value = {
+      labels: ['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이'],
+      datasets: [
+          {
+              label: '10분전',
+              backgroundColor: documentStyle.getPropertyValue('--pink-200'),
+              borderColor: documentStyle.getPropertyValue('--pink-200'),
+              data: [65, 59, 80, 81, 56, 55, 40, 20, 100, 33, 23]
+          },
+          {
+              label: '지금',
+              backgroundColor: documentStyle.getPropertyValue('--pink-500'),
+              borderColor: documentStyle.getPropertyValue('--pink-500'),
+              data: [28, 48, 40, 19, 86, 27, 90, 30, 20, 10, 88]
+          }
+      ]
+  };
+
+  barOptions.value = {
+        plugins: {
+            legend: {
+                labels: {
+                    fontColor: textColor
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: textColorSecondary,
+                    font: {
+                        weight: 500
+                    }
+                },
+                grid: {
+                    display: false,documentStyle,
+                    drawBorder: false
+                }
+            },
+            y: {
+                ticks: {
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder,
+                    drawBorder: false
+                }
+            }
+        }
+    };
+
+  
+}
 
 const dashboardInfoYesterday1 = ref({});
 const dashboardInfoToday1 = ref({});
 
 onBeforeMount(() => {
-  getIfno();
-  //getTest();
+  setColorOptions();
+  setChart();
 })
-
-const getTest = async () => {
-    const info = await TestInfo();
-    console.log('info : ', info);
-    console.log('country : ', info.name);
-};
-const getIfno = async () => {
-
-  const apiNames = ['/web/fin/pu/FINPU010101.do', '/web/fin/mn/FINMN010101.do', '/api/appcard/gcm/ka/GCMKA010101.do'];
-
-  // 전일자 00시부터 전일자 현재시간까지
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const gteTimeYesterday = new Date(yesterday).setHours(0, 0, 0, 0);
-  const lteTimeYesterday = new Date(yesterday).setHours(yesterday.getHours(), yesterday.getMinutes(), yesterday.getSeconds(), 999);
-
-  const dashboardInfoYesterday = await searchMainDashBoardInfo(apiNames, new Date(gteTimeYesterday).toISOString(), new Date(lteTimeYesterday).toISOString());
-  console.log('Yesterday:', dashboardInfoYesterday);
-
-  // 오늘 00시부터 오늘 현재시간까지
-  const now = new Date();
-  const gteTimeToday = new Date(now).setHours(0, 0, 0, 0);
-  const lteTimeToday = now.toISOString();
-
-  const dashboardInfoToday = await searchMainDashBoardInfo(apiNames, new Date(gteTimeToday).toISOString(), lteTimeToday);
-  console.log('Today:', dashboardInfoToday);
-
-  dashboardInfoYesterday1.value = dashboardInfoYesterday;
-  dashboardInfoToday1.value = dashboardInfoToday;
-  
-};
-
-watch(dashboardInfoYesterday1, (newVal, oldVal) => {
-    if (newVal && newVal.hits && newVal.hits.total) {
-        lineData.datasets[0].data[6] = newVal.hits.total.value;
-    }
-});
-
-const lineData = reactive({
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'First Dataset',
-            data: [65, 59, 80, 81, 56, 55, dashboardInfoYesterday1.value?.hits?.total?.value || 0],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: 0.4
-        },
-        {
-            label: 'Second Dataset',
-            data: [28, 48, 40, 19, 86, 27, 90],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: 0.4
-        }
-    ]
-});
-const items = ref([
-    { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-    { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-]);
 
 const lineOptions = ref({
     responsive: true, // 반응형 옵션 활성화
@@ -155,21 +192,15 @@ watch(
 
 <template>
   <div class="col-12 xl:col-6">
-        <div class="card">
-            <h5>Sales Overview</h5>
-            <Chart type="doughnut" :data="lineData" :options="lineOptions" />
-        </div>
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">인증시도 횟수</h5>
+        <Chart type="pie" :data="authTypes" :options="pieOptions"></Chart>
     </div>
-    <div class="col-12 xl:col-6">
-        <div class="card">
-            <h5>Sales Overview</h5>
-            <Chart type="pie" :data="lineData" :options="lineOptions" />
-        </div>
+  </div>
+  <div class="col-12 xl:col-6">
+    <div class="card align-items-center">
+        <h5 class="text-left w-full">ooPay등록</h5>
+        <Chart type="bar" :data="payTypes" :options="barOptions"></Chart>
     </div>
-    <div class="col-12 xl:col-6">
-        <div class="card">
-            <h5>Sales Overview</h5>
-            <Chart type="bar" :data="lineData" :options="lineOptions" />
-        </div>
-    </div>
+  </div>
 </template>
