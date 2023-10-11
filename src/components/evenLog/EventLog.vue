@@ -33,7 +33,7 @@ const apiName = ref(null);
 onBeforeMount(() => {
 	  fetch('demo/customers-large.json')
 		.then((res) => res.json())
-		.then((d) => {
+		.then((d) => { 
 			eventList.value = d.hits.hits;
 			loading.value = false;
 

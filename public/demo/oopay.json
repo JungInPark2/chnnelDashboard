@@ -1,0 +1,105 @@
+{
+  "took": 18,
+  "timed_out": false,
+  "_shards": {
+    "total": 14,
+    "successful": 14,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 3,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": ".ds-logs-event-channel-2023.10.04-000031",
+        "_id": "rBsJBIsBDAVlc_mG3xQE",
+        "_version": 1,
+        "_score": null,
+        "_source": {
+          "@timestamp": "2023-10-06T08:10:31.150Z",
+          "hc": {
+            "api": {
+              "name": "/api/appcard/prs/kp/PRSKP020101.do"
+            }
+          }
+        },
+        "sort": [
+          1696579831150
+        ]
+      },
+      {
+        "_index": ".ds-logs-event-channel-2023.10.04-000031",
+        "_id": "lcEJBIsBNgjTcF4Sto4g",
+        "_version": 1,
+        "_score": null,
+        "_source": {
+          "@timestamp": "2023-10-06T08:10:21.111Z",
+          "hc": {
+            "api": {
+              "name": "/api/appcard/prs/kp/PRSKP020101.do"
+            }
+          }
+        },
+        "sort": [
+          1696579821111
+        ]
+      },
+      {
+        "_index": ".ds-logs-event-channel-2023.09.25-000028",
+        "_id": "w_5j0YoBuZEgMYlnLPcx",
+        "_version": 1,
+        "_score": null,
+        "_source": {
+          "@timestamp": "2023-09-26T12:07:24.180Z",
+          "hc": {
+            "api": {
+              "name": "/api/appcard/prs/sg/PRSSG010201.do"
+            }
+          }
+        },
+        "sort": [
+          1695730044180
+        ]
+      }
+    ]
+  },
+  "aggregations": {
+    "TV": {
+      "doc_count": 10
+    },
+    "NP": {
+      "doc_count": 22
+    },
+    "SG": {
+      "doc_count": 45
+    },
+    "LP": {
+      "doc_count": 35
+    },
+    "KP": {
+      "doc_count": 28
+    },
+    "SM": {
+      "doc_count": 15
+    },
+    "TO": {
+      "doc_count": 88
+    },
+    "HC": {
+      "doc_count": 90
+    },
+    "BM": {
+      "doc_count": 100
+    },
+    "SP": {
+      "doc_count": 20
+    },
+    "AP": {
+      "doc_count": 40
+    }
+  }
+}
