@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import AppLayout from '@/layout/AppLayout.vue';
 import MainView from '@/views/MainView.vue'
 import EventView from '@/views/EventView.vue'
@@ -7,7 +7,7 @@ import CommonView from '@/views/CommonView.vue'
 
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     { path: '/', component: AppLayout, 
       children: [
@@ -18,5 +18,6 @@ const router = createRouter({
     ]},
   ]
 });
+
 
 export default router

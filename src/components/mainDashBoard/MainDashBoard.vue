@@ -1,6 +1,6 @@
 <script setup>
-import MxArea1Board from '@/components/MainDashBoard/MxArea1Board.vue';
-import AppCardArea1Board from '@/components/MainDashBoard/AppCardArea1Board.vue';
+import MxArea1Board from '@/components/mainDashBoard/MxArea1Board.vue';
+import AppCardArea1Board from '@/components/mainDashBoard/AppCardArea1Board.vue';
 
 // mxArea1Board , appCardAre1 에 넘길 동일한 데이터는 props 로 넘기기
 </script>
