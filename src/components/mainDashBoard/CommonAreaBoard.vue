@@ -3,12 +3,10 @@ import { onBeforeMount, reactive, ref } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 
 const mxMainList = reactive([
-   {api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴패키지', cnt : '0' }
-  ,{api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '0' }
-  ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드로그인', cnt : '0' }
+   {api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드 로그인', cnt : '0', yesterdayCnt:  '0' }
 ])
-
-const tileList = reactive([]);
 
 const searchTempCommonAreaInfo = () => {
   if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
@@ -23,6 +21,7 @@ const searchTempCommonAreaInfo = () => {
         for (let j = 0; j < buckets.length; j++) {
           if (buckets[j].key === mxMainList[i].api) {
             mxMainList[i].cnt = buckets[j].doc_count;
+            mxMainList[i].yesterdayCnt = buckets[j].doc_count - 5;  //예시
           }
         }
       }
@@ -30,34 +29,41 @@ const searchTempCommonAreaInfo = () => {
   }
 }
 
-const searchCommonAreaInfo = async () => {
+const searchCommonAreaInfo = async (type, startDate, endDate) => {
+  
+  console.log(startDate.toISOString(), endDate.toISOString());
 
   const apiList = [];
   mxMainList.forEach(obj => {
     apiList.push(obj.api);
   });
 
-  const srtTimeToday = new Date(new Date()).setHours(0, 0, 0, 0);
-  const endTimeYesterday = new Date(new Date()).setHours(23, 59, 59, 999);
-
-  const result = await searchMainDashBoardInfo(apiList, new Date(srtTimeToday).toISOString(), new Date(endTimeYesterday).toISOString())
-
+  const result = await searchMainDashBoardInfo(apiList, startDate.toISOString(), endDate.toISOString());
   const buckets = result.aggregations.api_name.buckets;
 
   for (let i = 0; i < mxMainList.length; i++) {
     for (let j = 0; j < buckets.length; j++) {
       if (buckets[j].key === mxMainList[i].api) {
-        mxMainList[i].cnt = buckets[j].doc_count;
+        if(type === 'T') {
+          mxMainList[i].cnt = buckets[j].doc_count;
+        }else{
+          mxMainList[i].yesterdayCnt = buckets[j].doc_count;
+        }
+        
       }
     }
   }
 }
 
 onBeforeMount(() => {
+  var today = new Date();
+  var yesterday = new Date(today);
+
   if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
     searchTempCommonAreaInfo();
   }else{
-    searchCommonAreaInfo();
+    searchCommonAreaInfo('T' , new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
+    searchCommonAreaInfo('Y' , new Date(yesterday.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date(yesterday).setHours(23, 59, 59, 999));
   }
 })
 </script>
@@ -70,12 +76,9 @@ onBeforeMount(() => {
                     <span class="block text-500 font-medium mb-3">{{ item.apiName }}</span>
                     <div class="text-900 font-medium text-xl">{{ item.cnt }}</div>
                 </div>
-                <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
-                    <i class="pi pi-search text-blue-500 text-xl"></i>
-                </div>
             </div>
-            <span class="text-green-500 font-medium">하루 전</span>
-            <span class="text-500"> ...</span>
+            <span class="text-green-500 font-medium">하루 전  </span>
+            <span class="text-500"> {{ item.yesterdayCnt }} </span>
         </div>
     </div>
 </template>
