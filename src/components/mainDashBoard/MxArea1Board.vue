@@ -235,7 +235,7 @@ const getShtrCardLoanRto = (count) => {
 
                 <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
                     <div style="width: 450px;">
-                        <span class="text-900 font-medium mr-2 mb-1 md:mb-0">신청처리완료</span>
+                        <span class="text-900 font-medium mr-2 mb-1 md:mb-0">신청 완료</span>
                         <div class="mt-1 text-600">전일자 건수</div>
                     </div>
                     <div class="mt-2 md:mt-0 flex flex-column align-items-center ml-3 w-full">
