@@ -1,5 +1,5 @@
 <script setup>
-import EventLog from '../components/evenLog/EventLog.vue'
+import EventLog from '../components/eventLog/EventLog.vue'
 
 </script>
 

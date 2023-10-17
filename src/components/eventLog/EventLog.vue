@@ -1,25 +1,25 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, reactive } from 'vue';
+import { searchEventLogInfo } from '@/api/eventLog';
 import JsonViewer from 'vue-json-viewer';
 
 const serverTypes = ref([
-		{ name: '전체', code: 'ALL' },
-    { name: 'MX', code: 'MX' },
-    { name: '앱카드', code: 'APPCARD' }
+		{ name: '전체', code: '' },
+    { name: 'MX', code: 'mx' },
+    { name: '앱카드', code: 'appcard' }
 ]);
 
-// TODO 추가
 const instanceValues = ref([
-    { name: 'mx21', code: 'mx21' },
-    { name: 'mx22', code: 'mx22' },
-    { name: 'mx23', code: 'mx23' },
-    { name: 'mx24', code: 'mx24' },
-    { name: 'mx25', code: 'mx25' },
-    { name: 'mx26', code: 'mx26' }
+{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
+    ,{ name: 'mx21', code: 'mx21' }, { name: 'mx22', code: 'mx22' }, { name: 'mx23', code: 'mx23' }, { name: 'mx24', code: 'mx24' }, { name: 'mx25', code: 'mx25' }, { name: 'mx26', code: 'mx26' }
+    ,{ name: 'mx31', code: 'mx31' }, { name: 'mx32', code: 'mx32' }, { name: 'mx33', code: 'mx33' }, { name: 'mx34', code: 'mx34' }, { name: 'mx35', code: 'mx35' }, { name: 'mx36', code: 'mx36' }
+    ,{ name: 'mx41', code: 'mx41' }, { name: 'mx42', code: 'mx42' }, { name: 'mx43', code: 'mx43' }, { name: 'mx44', code: 'mx44' }, { name: 'mx45', code: 'mx45' }, { name: 'mx46', code: 'mx46' }
+    ,{ name: 'mx51', code: 'mx51' }, { name: 'mx52', code: 'mx52' }, { name: 'mx53', code: 'mx53' }, { name: 'mx54', code: 'mx54' }, { name: 'mx55', code: 'mx55' }, { name: 'mx56', code: 'mx56' }
+    ,{ name: 'mx61', code: 'mx61' }, { name: 'mx62', code: 'mx62' }, { name: 'mx63', code: 'mx63' }, { name: 'mx64', code: 'mx64' }, { name: 'mx65', code: 'mx65' }, { name: 'mx66', code: 'mx66' }
 ]);
 
 const serverType = ref(serverTypes.value[0]);
-const instanceValue = ref([]);
+const instanceValue = ref(instanceValues);
 const filters = ref(null);
 const startDate = ref(null);
 const endDate = ref(null);
@@ -28,44 +28,21 @@ const ip = ref(null);
 const eventList = ref(null);
 const loading = ref(false);
 const isInvalid = ref(false);
-const apiName = ref(null);
+const api = ref(null);
+
+const resultList = reactive([
+   {time : '', instance : '', ip : '', csno : '', os : '', api : '', duration : '' , resltcd : '', request : '', response : ''}
+])
 
 onBeforeMount(() => {
-	  fetch('demo/customers-large.json')
-		.then((res) => res.json())
-		.then((d) => { 
-			eventList.value = d.hits.hits;
-			loading.value = false;
-
-			eventList.value.forEach((event) => {
-				event.value = event._source;
-
-				//필드 안내려오는건 validation 체크 어떤게 좋을 지 고민 
-				event.duration = event.value.hc ? event.value.hc.api.duration : '';
-				event.host = event.value.agent ? event.value.agent.name : '';
-				event.ip = event.value.source ? event.value.source.ip : '';
-				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
-				event.csno = event.value.event ? event.value.event.req.message.csno : '';
-				event.req = event.value.hc && event.value.hc.event ? event.value.hc.event.req : '';
-				event.res = event.value.hc && event.value.hc.event ? event.value.hc.event.res : '';
-				event.device = event.value.hc && event.value.hc.device ? event.value.hc.device.info : '';
-			});
-		})
-
-	initFilters();
+	if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
+    searchTempInfo();
+		console.log('검색조건:' + serverType.value.code , instanceValue.value.code, startDate.value, endDate.value, csno.value, ip.value, api.name);
+  }
 });
 
-const initFilters = () => {
-	// 초기 조건 세팅
-	filters.value = {
-		
-	};
-};
-
 const valid = () => {
-	
 	isInvalid.value = true;
-	
 	if(!serverType.value.code || instanceValue.value.length == 0 || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
 		loading.value = false;
 		return false;
@@ -74,17 +51,50 @@ const valid = () => {
 }
 
 const search = () => {
-
 	loading.value = true;
 
-	if(!valid()) return;
+	//if(!valid()) return;
 
-	console.log('검색 조건:\n' + serverType.value.code, instanceValue.value, startDate.value , endDate.value, csno.value, ip.value, apiName);
-	//api request 요청 포맷 확인
-	setTimeout(() => (loading.value = false), 1000);
+	const serverList = ['mx', 'appcard'];
+
+  // serverType.value.forEach(obj => {
+	// 	serverList.push(obj.code);
+	// })
+
+	const instanceList = [];
+  instanceValue.value.forEach(obj => {
+    instanceList.push(obj.code);
+  });
+
+	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
+	
+	searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
 	isInvalid.value = false;
 };
 
+const searchTempInfo = () => {
+		fetch('demo/event.json')
+		.then((res) => res.json())
+		.then((d) => { 
+			eventList.value = d.hits.hits;
+			loading.value = false;
+
+			eventList.value.forEach((event) => {
+				event.value = event._source;	
+				//필드 안내려오는건 validation 체크 어떤게 좋을 지 고민 
+				event.time = event.value.hc ? event.value.timestamp : '';
+				event.instance = event.value.agent ? event.value.agent.name : '';
+				event.ip = event.value.source ? event.value.source.ip : '';
+				event.csno = event.value.hc ? event.value.hc.csno : '';
+				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
+				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
+				event.duration = event.value.hc ? event.value.hc.api.duration : '';
+				event.resltcd = '0000';
+				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+			});
+		})
+}
 </script>
 
 <template>
@@ -133,7 +143,7 @@ const search = () => {
 						</div>
 						<div class="col-12 md:col-3">
 							<span class="p-input-icon-left p-input-icon-right">
-									<InputText type="text" placeholder="API명" v-model="apiName" />
+									<InputText type="text" placeholder="API명" v-model="api" />
 									<i class="pi pi-search" />
 							</span>
 						</div>
@@ -159,17 +169,16 @@ const search = () => {
 					:filters="filters"
 					responsiveLayout="scroll"
 				>
-				
 					<template #empty>조회된 결과가 없습니다.</template>
 					<template #loading> Loading data.. Please wait. </template>
 					<Column field="응답시간" header="응답 시간" dataType="date" >
 						<template #body="{ data }">
-							{{ data.duration }}
+							{{ data.time }}
 						</template>
 					</Column>
 					<Column header="instance" filterField="instance" >
 						<template #body="{ data }">
-							{{ data.host }}
+							{{ data.instance }}
 						</template>
 					</Column>
 					<Column header="클라이언트 IP" filterField="클라이언트 IP" >
@@ -182,9 +191,9 @@ const search = () => {
 							{{ data.csno }}
 						</template>
 					</Column>
-					<Column header="os명" filterField="os명">
+					<Column header="OS타입(버전)" filterField="OS타입(버전)">
 						<template #body="{ data }">
-							{{ data.device }}
+							{{ data.os }}
 						</template>
 					</Column>
 					<Column field="API명" header="API명" style="min-width: 12rem" >
@@ -193,13 +202,13 @@ const search = () => {
 							</template>
 					</Column>
 					<Column field="소요시간" header="소요시간" >
-									<template #body="{ data }">
-										{{ data.duration }}
-									</template>
-								</Column>
+						<template #body="{ data }">
+							{{ data.duration }}
+						</template>
+					</Column>
 					<Column field="결과코드" header="결과코드">
 						<template #body="{ data }">
-							{{ data.return_code }}
+							{{ data.resltcd }}
 						</template>
 					</Column>
 					<Column field="request" header="request" >
@@ -207,7 +216,7 @@ const search = () => {
 							<Accordion >
 								<AccordionTab header="보기">
 										<p class="line-height-3 m-0">
-											<json-viewer :value="data.req" copyable></json-viewer>
+											<json-viewer :value="data.request" copyable></json-viewer>
 										</p>
 								</AccordionTab>
 						</Accordion>
@@ -218,7 +227,7 @@ const search = () => {
 							<Accordion >
 								<AccordionTab header="보기">
 										<p class="line-height-3 m-0">
-											<json-viewer :value="data.res" copyable></json-viewer>
+											<json-viewer :value="data.response" copyable></json-viewer>
 										</p>
 								</AccordionTab>
 						</Accordion>

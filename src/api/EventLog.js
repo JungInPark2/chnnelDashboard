@@ -1,18 +1,36 @@
 import http from "./http";
 
-const searchEventLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, csno) => {
+const searchEventLogInfo = async (serviceName, instances, gteDttm, lteDttm, csno, ip, api) => {
     try {
-        const response = await http.post('/logs-transaction-channel/_search', {
+        const response = await http.post('/logs-event-channel/_search', {
             size: 10000,
-            _source: false,
+            _source: [
+                "@timestamp",
+                "hc.api.duration",
+                "agent.name",
+                "hc.os.platform",
+                "hc.os.version",
+                "hc.csno",
+                "hc.api.name",
+                "source.ip",
+                "hc.event.res.parsed.hdr.srvrDt" ,
+                "hc.event.res.parsed.hdr.srvrEltm" ,
+                "hc.event.req.message",
+                "hc.event.res.message"  
+            ],
             fields: [
                 "@timestamp",
-                "hc.guid.fst",
-                "hc.guid.now",
-                "hc.transaction.common.TRM_IPAD",
+                "hc.api.duration",
+                "agent.name",
+                "hc.os.platform",
+                "hc.os.version",
                 "hc.csno",
-                "event.category",
-                "message"
+                "hc.api.name",
+                "source.ip",
+                "hc.event.res.parsed.hdr.srvrDt" ,
+                "hc.event.res.parsed.hdr.srvrEltm" ,
+                "hc.event.req.message",
+                "hc.event.res.message"  
             ],
             sort: [
                 {
@@ -34,22 +52,27 @@ const searchEventLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress
                         },
                         {
                             terms: {
-                                "hc.service.name": [serviceName]
+                                "hc.service.name": serviceName
                             }
                         },
                         {
                             terms: {
-                                "hc.guid.now": [guid]
+                                "agent.name": instances
                             }
                         },
                         {
                             terms: {
-                                "hc.transaction.common.TRM_IPAD": [ipAddress]
+                                "hc.api.name": [api]
                             }
                         },
                         {
                             terms: {
                                 "hc.csno": [csno]
+                            }
+                        },
+                        {
+                            terms: {
+                                "source.ip": [ip]
                             }
                         }
                     ]
