@@ -1,105 +1,68 @@
 {
-  "took": 18,
-  "timed_out": false,
-  "_shards": {
-    "total": 14,
-    "successful": 14,
-    "skipped": 0,
-    "failed": 0
+  "took":3,
+  "timed_out":false,
+  "_shards":{
+     "total":2,
+     "successful":2,
+     "skipped":0,
+     "failed":0
   },
-  "hits": {
-    "total": {
-      "value": 3,
-      "relation": "eq"
-    },
-    "max_score": null,
-    "hits": [
-      {
-        "_index": ".ds-logs-event-channel-2023.10.04-000031",
-        "_id": "rBsJBIsBDAVlc_mG3xQE",
-        "_version": 1,
-        "_score": null,
-        "_source": {
-          "@timestamp": "2023-10-06T08:10:31.150Z",
-          "hc": {
-            "api": {
-              "name": "/api/appcard/prs/kp/PRSKP020101.do"
-            }
-          }
-        },
-        "sort": [
-          1696579831150
-        ]
-      },
-      {
-        "_index": ".ds-logs-event-channel-2023.10.04-000031",
-        "_id": "lcEJBIsBNgjTcF4Sto4g",
-        "_version": 1,
-        "_score": null,
-        "_source": {
-          "@timestamp": "2023-10-06T08:10:21.111Z",
-          "hc": {
-            "api": {
-              "name": "/api/appcard/prs/kp/PRSKP020101.do"
-            }
-          }
-        },
-        "sort": [
-          1696579821111
-        ]
-      },
-      {
-        "_index": ".ds-logs-event-channel-2023.09.25-000028",
-        "_id": "w_5j0YoBuZEgMYlnLPcx",
-        "_version": 1,
-        "_score": null,
-        "_source": {
-          "@timestamp": "2023-09-26T12:07:24.180Z",
-          "hc": {
-            "api": {
-              "name": "/api/appcard/prs/sg/PRSSG010201.do"
-            }
-          }
-        },
-        "sort": [
-          1695730044180
-        ]
-      }
-    ]
+  "hits":{
+     "total":{
+        "value":17,
+        "relation":"eq"
+     },
+     "max_score":null,
+     "hits":[
+        
+     ]
   },
-  "aggregations": {
-    "TV": {
-      "doc_count": 10
-    },
-    "NP": {
-      "doc_count": 22
-    },
-    "SG": {
-      "doc_count": 45
-    },
-    "LP": {
-      "doc_count": 35
-    },
-    "KP": {
-      "doc_count": 28
-    },
-    "SM": {
-      "doc_count": 15
-    },
-    "TO": {
-      "doc_count": 88
-    },
-    "HC": {
-      "doc_count": 90
-    },
-    "BM": {
-      "doc_count": 100
-    },
-    "SP": {
-      "doc_count": 20
-    },
-    "AP": {
-      "doc_count": 40
-    }
+  "aggregations":{
+     "api_name":{
+        "doc_count_error_upper_bound":0,
+        "sum_other_doc_count":0,
+        "buckets":[
+           {
+            "key":"/api/appcard/prs/ap/PRSAP010201.do",
+            "doc_count":87
+           },
+           {
+            "key":"/api/appcard/prs/bm/PRSBM010201.do",
+            "doc_count":22
+          },{
+            "key":"/api/appcard/prs/hc/PRSHC010201.do",
+            "doc_count":11
+          },{
+            "key":"/api/appcard/prs/kp/PRSKP020101.do",
+            "doc_count":33
+          },{
+            "key":"/api/appcard/prs/lp/PRSLP010201.do",
+            "doc_count":34
+          },{
+            "key":"/api/appcard/prs/np/PRSNP020101.do",
+            "doc_count":25
+          },{
+            "key":"/api/appcard/prs/np/PRSNP020201.do",
+            "doc_count":45
+          },{
+            "key":"/api/appcard/prs/sg/PRSSG010201.do",
+            "doc_count":53
+          },{
+            "key":"/api/appcard/prs/sp/PRSSP020101.do",
+            "doc_count":16
+          },{
+            "key":"/api/appcard/prs/sm/PRSSM010201.do",
+            "doc_count":78
+          },{
+            "key":"/api/appcard/prs/to/PRSTO010201.do",
+            "doc_count":77
+          },{
+            "key":"/api/appcard/prs/tv/PRSTV010201.do",
+            "doc_count":66
+          }
+        ]
+     }
   }
 }
+
+

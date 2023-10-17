@@ -1,5 +1,6 @@
 <script setup>
-import { onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, ref, reactive } from 'vue';
+import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 
 let documentStyle = getComputedStyle(document.documentElement);
 let textColor = documentStyle.getPropertyValue('--text-color');
@@ -13,6 +14,28 @@ const oopayTypes = ref({});
 const oopayOptions = ref({});
 const oopayList = ref([]);
 const yesterDayoopayList = ref([]);
+const authOrderList = reactive([
+   {api : '/api/appcard/auth/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/auth/ct/AUTCT010101.do', apiName : '공인인증', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/auth/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/auth/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/auth/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/auth/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
+])
+const oopayOrderList = reactive([
+   {api : '/api/appcard/prs/ap/PRSAP010201.do', apiName : 'ARS인증', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/prs/bm/PRSBM010201.do', apiName : '배민페이', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/prs/hc/PRSHC010201.do', apiName : 'carPay', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/kp/PRSKP020101.do', apiName : '카카오페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/lp/PRSLP010201.do', apiName : 'L.PAY', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/np/PRSNP020101.do', apiName : '네이버', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/np/PRSNP020201.do', apiName : '네이버인입', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/sg/PRSSG010201.do', apiName : 'SSG', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/sp/PRSSP020101.do', apiName : '스마일페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/sm/PRSSM010201.do', apiName : '삼성페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/st/PRSTO010201.do', apiName : '토스페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/tv/PRSTV010201.do', apiName : 'TV페이', cnt : '0', yesterdayCnt:  '0' }
+])
 
 const setColorOptions = () => {
     documentStyle = getComputedStyle(document.documentElement);
@@ -21,13 +44,40 @@ const setColorOptions = () => {
     surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 };
 
-const setChart = () => {
+const getTempInfo = () => {
+    fetch('demo/oopay.json')
+		.then((res) => res.json())
+		.then((data) => {  
+      const buckets = data.aggregations.api_name.buckets;
+      for (let i = 0; i < oopayOrderList.length; i++) {
+        for (let j = 0; j < buckets.length; j++) {
+          if (buckets[j].key === oopayOrderList[i].api) {
+            oopayOrderList[i].cnt = buckets[j].doc_count;
+          }
+        }
+      }
+      setOOPayChart();
+  })
+    fetch('demo/auth.json')
+    .then((res) => res.json())
+    .then((data) => {  
+      const buckets = data.aggregations.api_name.buckets;
+      for (let i = 0; i < authOrderList.length; i++) {
+        for (let j = 0; j < buckets.length; j++) {
+          if (buckets[j].key === authOrderList[i].api) {
+            authOrderList[i].cnt = buckets[j].doc_count;
+          }
+        }
+      }
+      setAuthChart();
+    })
+}
 
-  console.log('인증별 API호출 건수');
+const setAuthChart = () => {
+  authOrderList.forEach(obj => {
+    authList.value.push(obj.cnt);
+  });
 
-  // TODO 인증 수 가져오기 
-  // ARS인증(auttr), 공인인증, fido인증, 카드비밀번호인증, cvv인증, sms인증, 결제비밀번호인증 
-  // aut010201 autct0101 autfd0102 authc0101 autmp0102 autpp0101 
   authTypes.value = {
     labels: ['ARS인증', '공인인증', 'fido인증', '카드비밀번호인증' , 'sms인증', '결제비밀번호인증'],
     datasets: [
@@ -51,9 +101,16 @@ const setChart = () => {
           }
       }
   };
+}
+
+const setOOPayChart = () => {
+  oopayOrderList.forEach(obj => {
+    oopayList.value.push(obj.cnt);
+    yesterDayoopayList.value.push(obj.yesterdayCnt);
+  });
 
   oopayTypes.value = {
-      labels: ['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이'],
+      labels: ['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이'],
       datasets: [
           {
               label: '하루전',
@@ -104,57 +161,55 @@ const setChart = () => {
     };
 }
 
-const getPayInfo = () => {
+const getAppCardInfo = async (type, startDate, endDate) => {
+  
+  console.log(startDate.toISOString(), endDate.toISOString());
 
-    //TODO axios 로 변경
-    fetch('demo/oopay.json')
-		.then((res) => res.json())
-		.then((data) => {  
-      // 오늘~지금까지
-      oopayList.value.push(data.aggregations.AP.doc_count);
-      oopayList.value.push(data.aggregations.BM.doc_count);
-      oopayList.value.push(data.aggregations.HC.doc_count);
-      oopayList.value.push(data.aggregations.KP.doc_count);
-      oopayList.value.push(data.aggregations.LP.doc_count);
-      oopayList.value.push(data.aggregations.NP.doc_count);
-      oopayList.value.push(data.aggregations.SG.doc_count);
-      oopayList.value.push(data.aggregations.SM.doc_count);
-      oopayList.value.push(data.aggregations.SP.doc_count);
-      oopayList.value.push(data.aggregations.TO.doc_count);
-      oopayList.value.push(data.aggregations.TV.doc_count);
-      
-      //TODO 어제 일자
-      yesterDayoopayList.value.push(data.aggregations.AP.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.BM.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.HC.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.KP.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.LP.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.NP.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.SG.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.SM.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.SP.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.TO.doc_count - 5);
-      yesterDayoopayList.value.push(data.aggregations.TV.doc_count - 5);
-		})
+  const apiList = [];
+  authOrderList.forEach(obj => {
+    apiList.push(obj.api);
+  });
+  oopayOrderList.forEach(obj => {
+    apiList.push(obj.api);
+  });
 
-    //TODO axios 로 변경 ['ARS인증', '공인인증', 'fido인증', '카드비밀번호인증' ,'cvc인증', 'sms인증', '결제비밀번호인증'],
-    fetch('demo/auth.json')
-		.then((res) => res.json())
-		.then((data) => {  
-      // 오늘~지금까지
-      authList.value.push(data.aggregations.AR.doc_count);
-      authList.value.push(data.aggregations.CT.doc_count);
-      authList.value.push(data.aggregations.FD.doc_count);
-      authList.value.push(data.aggregations.HC.doc_count);
-      authList.value.push(data.aggregations.MP.doc_count);
-      authList.value.push(data.aggregations.PP.doc_count);
-		})
+  const result = await searchMainDashBoardInfo(apiList, startDate.toISOString(), endDate.toISOString());
+  const buckets = result.aggregations.api_name.buckets;
+
+  for (let i = 0; i < authOrderList.length; i++) {
+    for (let j = 0; j < buckets.length; j++) {
+      if (buckets[j].key === authOrderList[i].api) {
+          authOrderList[i].cnt = buckets[j].doc_count;
+      }
+    }
+  }
+  for (let i = 0; i < oopayOrderList.length; i++) {
+    for (let j = 0; j < buckets.length; j++) {
+      if (buckets[j].key === oopayOrderList[i].api) {
+        oopayOrderList[i].cnt = buckets[j].doc_count;
+        if(type === 'Y') {
+          oopayOrderList[i].yesterdayCnt = buckets[j].doc_count;
+        }
+      }
+    }
+  }
+
+  // 차트가 안그려진다면 데이터 세팅하고 호출하는 방법 찾기 
+  setAuthChart();
+  setOOPayChart();
 }
 
 onBeforeMount(() => {
+  var today = new Date();
+  var yesterday = new Date(today);
+
   setColorOptions();
-  getPayInfo();
-  setChart();
+  if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
+    getTempInfo();
+  }else{
+    getAppCardInfo('T', new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
+    getAppCardInfo('Y', new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
+  }
 })
 
 </script>
