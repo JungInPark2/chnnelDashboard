@@ -1,12 +1,6 @@
 
 import http from "./http";
 
-// 진짜 호출이 되는지 확인겸 샘플로 하나 만들자
-const TestInfo = async () => {
-    const response = await http.post('http://api.openweathermap.org/data/2.5/weather?q=Seoul&appid=5dc753fbb35d7e99e7fd80b06a9a18a7');
-    return response.data;
-}
-
 const searchChannelDashboardInfo = async (apiNames, gteTime, lteTime) => {
     try {
         const response = await http.post('/logs-event-channel/_search', {
@@ -48,6 +42,5 @@ const searchChannelDashboardInfo = async (apiNames, gteTime, lteTime) => {
 }
 
 export {
-    searchChannelDashboardInfo,
-    TestInfo
+    searchChannelDashboardInfo
 }
