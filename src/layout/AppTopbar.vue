@@ -44,6 +44,7 @@ const isOutsideClicked = (event) => {
 <template>
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
+            <img src="/HyundaiCard.ico" alt="logo">
             <span>Hyundai Card</span>
         </router-link>
 
