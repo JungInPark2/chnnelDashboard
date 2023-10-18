@@ -4,13 +4,13 @@ import { searchEventLogInfo } from '@/api/eventLog';
 import JsonViewer from 'vue-json-viewer';
 
 const serverTypes = ref([
-		{ name: '전체', code: '' },
+		{ name: '전체', code: 'ALL' },
     { name: 'MX', code: 'mx' },
     { name: '앱카드', code: 'appcard' }
 ]);
 
 const instanceValues = ref([
-{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
+		{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
     ,{ name: 'mx21', code: 'mx21' }, { name: 'mx22', code: 'mx22' }, { name: 'mx23', code: 'mx23' }, { name: 'mx24', code: 'mx24' }, { name: 'mx25', code: 'mx25' }, { name: 'mx26', code: 'mx26' }
     ,{ name: 'mx31', code: 'mx31' }, { name: 'mx32', code: 'mx32' }, { name: 'mx33', code: 'mx33' }, { name: 'mx34', code: 'mx34' }, { name: 'mx35', code: 'mx35' }, { name: 'mx36', code: 'mx36' }
     ,{ name: 'mx41', code: 'mx41' }, { name: 'mx42', code: 'mx42' }, { name: 'mx43', code: 'mx43' }, { name: 'mx44', code: 'mx44' }, { name: 'mx45', code: 'mx45' }, { name: 'mx46', code: 'mx46' }
@@ -25,24 +25,23 @@ const startDate = ref(null);
 const endDate = ref(null);
 const csno = ref(null);
 const ip = ref(null);
-const eventList = ref(null);
 const loading = ref(false);
 const isInvalid = ref(false);
 const api = ref(null);
-
-const resultList = reactive([
-   {time : '', instance : '', ip : '', csno : '', os : '', api : '', duration : '' , resltcd : '', request : '', response : ''}
-])
+const isData = ref(true);
+const eventList = ref(null);
+const errorCode = ref(null);
+// const resultList = reactive([
+//    {time : '', instance : '', ip : '', csno : '', os : '', api : '', duration : '' , resltcd : '', request : '', response : '', service : ''}
+// ])
 
 onBeforeMount(() => {
 	if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
     searchTempInfo();
-		console.log('검색조건:' + serverType.value.code , instanceValue.value.code, startDate.value, endDate.value, csno.value, ip.value, api.name);
   }
 });
 
 const valid = () => {
-	isInvalid.value = true;
 	if(!serverType.value.code || instanceValue.value.length == 0 || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
 		loading.value = false;
 		return false;
@@ -53,8 +52,10 @@ const valid = () => {
 const search = () => {
 	loading.value = true;
 
-	//if(!valid()) return;
-
+	if(!valid()){
+		isInvalid.value = true;
+		return;
+	} 
 	const serverList = ['mx', 'appcard'];
 
   // serverType.value.forEach(obj => {
@@ -68,31 +69,64 @@ const search = () => {
 
 	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
 	
-	searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
-	isInvalid.value = false;
+	searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value)
+	.then(function(response) {
+		loading.value = false;
+		if(response.response.status == 200){
+
+			eventList.value = d.hits.hits;
+			isData.value = true;
+
+			eventList.value.forEach((event) => {
+				event.value = event._source;	
+				if(event.value.hc){
+					event.time = event.value.hc ? hc.event.res.parsed.hdr.srvrDt + ' ' + hc.event.res.parsed.hdr.srvrEltm : '';
+					event.csno = event.value.hc ? event.value.hc.csno : '';
+					event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
+					event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
+					event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+					event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+					event.duration = event.value.hc ? event.value.hc.api.duration : '';
+					event.service = hc.service.name;
+					event.resltcd = hc.event.res.parsed.hdr.rsltCd;
+				}
+				event.instance = event.value.agent ? event.value.agent.name : '';
+				event.ip = event.value.source ? event.value.source.ip : '';
+			});
+			
+		}else{
+			eventList.value = [];
+			errorCode.value = response.response.status;
+			isData.value = false;
+		}
+	});
+	
 };
 
 const searchTempInfo = () => {
 		fetch('demo/event.json')
 		.then((res) => res.json())
 		.then((d) => { 
-			eventList.value = d.hits.hits;
-			loading.value = false;
-
-			eventList.value.forEach((event) => {
+				eventList.value = d.hits.hits;
+				eventList.value.forEach((event) => {
 				event.value = event._source;	
-				//필드 안내려오는건 validation 체크 어떤게 좋을 지 고민 
-				event.time = event.value.hc ? event.value.timestamp : '';
+
+				if(event.value.hc){
+					event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
+					event.csno = event.value.hc ? event.value.hc.csno : '';
+					event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
+					event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
+					event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+					event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+					event.duration = event.value.hc ? event.value.hc.api.duration : '';
+					event.service = event.value.hc.service ? event.value.hc.service.name : '';
+					event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
+				}
 				event.instance = event.value.agent ? event.value.agent.name : '';
 				event.ip = event.value.source ? event.value.source.ip : '';
-				event.csno = event.value.hc ? event.value.hc.csno : '';
-				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
-				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
-				event.duration = event.value.hc ? event.value.hc.api.duration : '';
-				event.resltcd = '0000';
-				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
-				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
 			});
+
+			//loading.value = false;
 		})
 }
 </script>
@@ -113,7 +147,6 @@ const searchTempInfo = () => {
                     <MultiSelect id="multiselect" :options="instanceValues" v-model="instanceValue" optionLabel="name" :filter="false" :class="{ 'p-invalid': isInvalid && instanceValue.length == 0}" ></MultiSelect>
                     <label for="multiselect">instance</label>
                 </span>
-								
             </div>
 					</div>
 					<div class="grid p-fluid">
@@ -143,8 +176,8 @@ const searchTempInfo = () => {
 						</div>
 						<div class="col-12 md:col-3">
 							<span class="p-input-icon-left p-input-icon-right">
-									<InputText type="text" placeholder="API명" v-model="api" />
 									<i class="pi pi-search" />
+									<InputText type="text" placeholder="API명" v-model="api" />
 							</span>
 						</div>
 						<div class="col-12 md:col-3">
@@ -154,7 +187,7 @@ const searchTempInfo = () => {
 			</div>
 		</div>
 
-		<div class="col-12">
+		<div v-if="isData" class="col-12"> 
 			<div class="card">
 				<DataTable
 					:value="eventList"
@@ -236,6 +269,27 @@ const searchTempInfo = () => {
 				</DataTable>
 			</div>
 		</div>
+	</div>
+
+	<div class="grid">
+			<div class="col-12">
+			<div v-if="!isData" class="surface-ground  align-items-center justify-content-center  overflow-hidden">
+					<div class="flex flex-column align-items-center justify-content-center">
+							<div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
+									<div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">
+											<div class="grid flex flex-column align-items-center">
+													<div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
+															<i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+													</div>
+													<h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+													<span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
+													<img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
+											</div>
+									</div>
+							</div>
+					</div>
+			</div>
+	</div>
 	</div>
 </template>
 

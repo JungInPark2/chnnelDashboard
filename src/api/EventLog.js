@@ -11,12 +11,14 @@ const searchEventLogInfo = async (serviceName, instances, gteDttm, lteDttm, csno
                 "hc.os.platform",
                 "hc.os.version",
                 "hc.csno",
+                "hc.service.name",
                 "hc.api.name",
                 "source.ip",
                 "hc.event.res.parsed.hdr.srvrDt" ,
                 "hc.event.res.parsed.hdr.srvrEltm" ,
                 "hc.event.req.message",
-                "hc.event.res.message"  
+                "hc.event.res.message",
+                "hc.event.res.parsed.hdr.rsltCd" 
             ],
             fields: [
                 "@timestamp",
@@ -25,12 +27,14 @@ const searchEventLogInfo = async (serviceName, instances, gteDttm, lteDttm, csno
                 "hc.os.platform",
                 "hc.os.version",
                 "hc.csno",
+                "hc.service.name",
                 "hc.api.name",
                 "source.ip",
                 "hc.event.res.parsed.hdr.srvrDt" ,
                 "hc.event.res.parsed.hdr.srvrEltm" ,
                 "hc.event.req.message",
-                "hc.event.res.message"  
+                "hc.event.res.message",
+                "hc.event.res.parsed.hdr.rsltCd" 
             ],
             sort: [
                 {
@@ -82,14 +86,8 @@ const searchEventLogInfo = async (serviceName, instances, gteDttm, lteDttm, csno
         
         return response.data;
     } catch (error) {
-        // 타임아웃 에러 처리
-        if (error.code === 'ECONNABORTED') {
-            console.error('API 타임아웃');
-            throw new Error('API 타임아웃');
-        } else {
-            console.error('API 요청 중 오류 발생:', error);
-            throw error;
-        }
+        console.log(error);
+        return error;
     }
 }
 
