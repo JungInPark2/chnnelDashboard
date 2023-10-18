@@ -314,7 +314,7 @@ const getShtrCardLoanRto = (count) => {
             <div class="p-error" v-html="errorMessageShtrCardLoan"></div>
         </div>
 
-        <div class="card">
+        <div v-if="!isErrorShtrCardLoan"  class="card">
             <div class="flex justify-content-between align-items-center mb-5">
                 <h5>단기카드대출</h5>
             </div>
