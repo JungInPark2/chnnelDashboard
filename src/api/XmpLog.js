@@ -59,14 +59,8 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
         
         return response.data;
     } catch (error) {
-        // 타임아웃 에러 처리
-        if (error.code === 'ECONNABORTED') {
-            console.error('API 타임아웃');
-            throw new Error('API 타임아웃');
-        } else {
-            console.error('API 요청 중 오류 발생:', error);
-            throw error;
-        }
+        console.error('API 요청 중 오류 발생:', error);
+        throw error;
     }
 }
 
