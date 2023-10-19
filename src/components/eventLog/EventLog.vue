@@ -46,7 +46,7 @@ const valid = () => {
 	return true;
 }
 
-const search = () => {
+const search = async () => {
 	loading.value = true;
 
 	if(!valid()){
@@ -69,8 +69,9 @@ const search = () => {
 
 	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
 	
-	searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value)
-	.then(function(response) {
+	try{
+
+		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
 		loading.value = false;
 		if(response.response.status == 200){
 
@@ -99,7 +100,11 @@ const search = () => {
 			errorCode.value = response.response.status;
 			isData.value = false;
 		}
-	});
+
+	}catch (error) {
+		eventList.value = [];
+    isData.value = false;
+  }
 	
 };
 
