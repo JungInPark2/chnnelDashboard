@@ -31,9 +31,7 @@ const api = ref(null);
 const isData = ref(true);
 const eventList = ref(null);
 const errorCode = ref(null);
-// const resultList = reactive([
-//    {time : '', instance : '', ip : '', csno : '', os : '', api : '', duration : '' , resltcd : '', request : '', response : '', service : ''}
-// ])
+
 
 onBeforeMount(() => {
 	if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
@@ -56,11 +54,14 @@ const search = () => {
 		isInvalid.value = true;
 		return;
 	} 
-	const serverList = ['mx', 'appcard'];
-
-  // serverType.value.forEach(obj => {
-	// 	serverList.push(obj.code);
-	// })
+	
+	const serverList = [];
+	if(serverType.value.code == 'ALL') {
+		serverList.push('mx');
+		serverList.push('appcard');
+	}else{
+		serverList.push(serverType.value.code);
+	}
 
 	const instanceList = [];
   instanceValue.value.forEach(obj => {
@@ -204,6 +205,11 @@ const searchTempInfo = () => {
 				>
 					<template #empty>조회된 결과가 없습니다.</template>
 					<template #loading> Loading data.. Please wait. </template>
+					<Column field="시스템구분" header="시스템구분" dataType="date" >
+						<template #body="{ data }">
+							{{ data.service }}
+						</template>
+					</Column>
 					<Column field="응답시간" header="응답 시간" dataType="date" >
 						<template #body="{ data }">
 							{{ data.time }}

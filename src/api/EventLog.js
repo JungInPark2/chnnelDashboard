@@ -1,7 +1,55 @@
 import http from "./http";
 
-const searchEventLogInfo = async (serviceName, instances, gteDttm, lteDttm, csno, ip, api) => {
+const searchEventLogInfo = async (serverList, instances, gteDttm, lteDttm, csno, ip, api) => {
     try {
+
+        const queryObj = {
+            bool: {
+                    filter: [
+                        {
+                            range: {
+                                "@timestamp": {
+                                    "gte": gteDttm,
+                                    "lte": lteDttm
+                                }
+                            }
+                        },
+                        {
+                            terms: {
+                                "hc.service.name": serverList
+                            }
+                        },
+                        {
+                            terms: {
+                                "agent.name": instances
+                            }
+                        }
+                    ]
+                }
+        };
+
+        if (api) {
+            queryObj.bool.filter.push({
+                terms: {
+                    "hc.api.name": [api]
+                }
+            });
+        }
+        if (csno) {
+            queryObj.bool.filter.push({
+                terms: {
+                    "hc.csno": [csno]
+                }
+            });
+        }
+        if (ip) {
+            queryObj.bool.filter.push({
+                terms: {
+                    "source.ip": [ip]
+                }
+            });
+        }
+
         const response = await http.post('/logs-event-channel/_search', {
             size: 10000,
             _source: [
@@ -43,45 +91,7 @@ const searchEventLogInfo = async (serviceName, instances, gteDttm, lteDttm, csno
                     }
                 }
             ],
-            query: {
-                bool: {
-                    filter: [
-                        {
-                            range: {
-                                "@timestamp": {
-                                    "gte": gteDttm,
-                                    "lte": lteDttm
-                                }
-                            }
-                        },
-                        {
-                            terms: {
-                                "hc.service.name": serviceName
-                            }
-                        },
-                        {
-                            terms: {
-                                "agent.name": instances
-                            }
-                        },
-                        {
-                            terms: {
-                                "hc.api.name": [api]
-                            }
-                        },
-                        {
-                            terms: {
-                                "hc.csno": [csno]
-                            }
-                        },
-                        {
-                            terms: {
-                                "source.ip": [ip]
-                            }
-                        }
-                    ]
-                }
-            }
+            query: queryObj
         });
         
         return response.data;
