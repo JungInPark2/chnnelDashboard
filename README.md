@@ -26,7 +26,6 @@ npm install
 
 ```sh
 개발빌드: npm run build:dev
-검증빌드: npm run build:staging
 운영빌드: npm run build:prod
 프리뷰: npm run preview
 ```
