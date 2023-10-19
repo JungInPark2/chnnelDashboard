@@ -3,13 +3,43 @@ import { onBeforeMount, reactive, ref } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 
 const mxMainList = reactive([
-   {api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드 로그인', cnt : '0', yesterdayCnt:  '0' }
+   {api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '', yesterdayCnt : '' }
+  ,{api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '', yesterdayCnt : '' }
+  ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드 로그인', cnt : '', yesterdayCnt:  '' }
 ])
 
+const isInvalid = ref(false);
+
+const searchCommonAreaInfo = async (type, startDate, endDate) => {
+  
+  const apiList = [];
+  mxMainList.forEach(obj => {
+    apiList.push(obj.api);
+  });
+
+  try{
+    const response = await searchMainDashBoardInfo(apiList, startDate, endDate)  
+    const buckets = response.aggregations.api_name.buckets;
+    for (let i = 0; i < mxMainList.length; i++) {
+      for (let j = 0; j < buckets.length; j++) {
+        if (buckets[j].key === mxMainList[i].api) {
+          if(type === 'T') {
+            mxMainList[i].cnt = buckets[j].doc_count;
+          }else{
+            mxMainList[i].yesterdayCnt = buckets[j].doc_count;
+          }
+          
+        }
+      }
+    }
+    isInvalid.value = false;
+  }catch (error) {
+    isInvalid.value = true;
+  }
+}
+
 const searchTempCommonAreaInfo = () => {
-  if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
+  if(import.meta.env.MODE === 'L') {
 
     fetch('demo/commonAreaData.json')
     .then((res) => res.json())
@@ -29,41 +59,21 @@ const searchTempCommonAreaInfo = () => {
   }
 }
 
-const searchCommonAreaInfo = async (type, startDate, endDate) => {
-  
-  console.log(startDate.toISOString(), endDate.toISOString());
-
-  const apiList = [];
-  mxMainList.forEach(obj => {
-    apiList.push(obj.api);
-  });
-
-  const result = await searchMainDashBoardInfo(apiList, startDate.toISOString(), endDate.toISOString());
-  const buckets = result.aggregations.api_name.buckets;
-
-  for (let i = 0; i < mxMainList.length; i++) {
-    for (let j = 0; j < buckets.length; j++) {
-      if (buckets[j].key === mxMainList[i].api) {
-        if(type === 'T') {
-          mxMainList[i].cnt = buckets[j].doc_count;
-        }else{
-          mxMainList[i].yesterdayCnt = buckets[j].doc_count;
-        }
-        
-      }
-    }
-  }
-}
-
 onBeforeMount(() => {
-  var today = new Date();
-  var yesterday = new Date(today);
+  const now = new Date();
+  const srtTimeToday = new Date(now).setHours(0, 0, 0, 0);
+  const endTimeToday = now.toISOString();
 
-  if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const srtTimeYesterday = new Date(yesterday).setHours(0, 0, 0, 0);
+  const endTimeYesterday = new Date(yesterday).setHours(23, 59, 59, 999);
+
+  if(import.meta.env.MODE === 'L') {
     searchTempCommonAreaInfo();
   }else{
-    searchCommonAreaInfo('T' , new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
-    searchCommonAreaInfo('Y' , new Date(yesterday.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date(yesterday).setHours(23, 59, 59, 999));
+    searchCommonAreaInfo('T' , new Date(srtTimeToday).toISOString(), endTimeToday);
+    searchCommonAreaInfo('Y' , new Date(srtTimeYesterday).toISOString(), new Date(endTimeYesterday).toISOString());
   }
 })
 </script>
@@ -77,8 +87,25 @@ onBeforeMount(() => {
                     <div class="text-900 font-medium text-xl">{{ item.cnt }}</div>
                 </div>
             </div>
-            <span class="text-green-500 font-medium">하루 전  </span>
-            <span class="text-500"> {{ item.yesterdayCnt }} </span>
+            <span v-if="!isInvalid" class="text-green-500 font-medium">하루 전  </span>
+            <span v-if="!isInvalid" class="text-500"> {{ item.yesterdayCnt }} </span>
+            <div v-if="isInvalid" class="surface-ground  align-items-center justify-content-center  overflow-hidden">
+              <div class="flex flex-column align-items-center justify-content-center">
+                    <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
+                        <div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">
+                            <div class="grid flex flex-column align-items-center">
+                                <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
+                                    <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+                                </div>
+                                <h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+                                <span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
+                                <img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+  
 </template>

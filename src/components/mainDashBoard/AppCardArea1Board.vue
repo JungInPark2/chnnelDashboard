@@ -14,27 +14,29 @@ const oopayTypes = ref({});
 const oopayOptions = ref({});
 const oopayList = ref([]);
 const yesterDayoopayList = ref([]);
+const isInvalid = ref(false);
+
 const authOrderList = reactive([
-   {api : '/api/appcard/auth/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/auth/ct/AUTCT010101.do', apiName : '공인인증', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/auth/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/auth/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/auth/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/auth/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
+   {api : '/api/appcard/auth/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '', yesterdayCnt : '' }
+  ,{api : '/api/appcard/auth/ct/AUTCT010101.do', apiName : '공인인증', cnt : '', yesterdayCnt : '' }
+  ,{api : '/api/appcard/auth/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/auth/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/auth/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/auth/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '', yesterdayCnt:  '' }
 ])
 const oopayOrderList = reactive([
-   {api : '/api/appcard/prs/ap/PRSAP010201.do', apiName : 'ARS인증', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/prs/bm/PRSBM010201.do', apiName : '배민페이', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/prs/hc/PRSHC010201.do', apiName : 'carPay', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/kp/PRSKP020101.do', apiName : '카카오페이', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/lp/PRSLP010201.do', apiName : 'L.PAY', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/np/PRSNP020101.do', apiName : '네이버', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/np/PRSNP020201.do', apiName : '네이버인입', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/sg/PRSSG010201.do', apiName : 'SSG', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/sp/PRSSP020101.do', apiName : '스마일페이', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/sm/PRSSM010201.do', apiName : '삼성페이', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/st/PRSTO010201.do', apiName : '토스페이', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/prs/tv/PRSTV010201.do', apiName : 'TV페이', cnt : '0', yesterdayCnt:  '0' }
+   {api : '/api/appcard/prs/ap/PRSAP010201.do', apiName : 'ARS인증', cnt : '', yesterdayCnt : '' }
+  ,{api : '/api/appcard/prs/bm/PRSBM010201.do', apiName : '배민페이', cnt : '', yesterdayCnt : '' }
+  ,{api : '/api/appcard/prs/hc/PRSHC010201.do', apiName : 'carPay', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/kp/PRSKP020101.do', apiName : '카카오페이', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/lp/PRSLP010201.do', apiName : 'L.PAY', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/np/PRSNP020101.do', apiName : '네이버', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/np/PRSNP020201.do', apiName : '네이버인입', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/sg/PRSSG010201.do', apiName : 'SSG', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/sp/PRSSP020101.do', apiName : '스마일페이', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/sm/PRSSM010201.do', apiName : '삼성페이', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/st/PRSTO010201.do', apiName : '토스페이', cnt : '', yesterdayCnt:  '' }
+  ,{api : '/api/appcard/prs/tv/PRSTV010201.do', apiName : 'TV페이', cnt : '', yesterdayCnt:  '' }
 ])
 
 const setColorOptions = () => {
@@ -161,9 +163,9 @@ const setOOPayChart = () => {
     };
 }
 
+
+
 const getAppCardInfo = async (type, startDate, endDate) => {
-  
-  console.log(startDate.toISOString(), endDate.toISOString());
 
   const apiList = [];
   authOrderList.forEach(obj => {
@@ -172,43 +174,51 @@ const getAppCardInfo = async (type, startDate, endDate) => {
   oopayOrderList.forEach(obj => {
     apiList.push(obj.api);
   });
+  
+  try{
+    const result = await searchMainDashBoardInfo(apiList, startDate, endDate);
+    const buckets = result.aggregations.api_name.buckets;
 
-  const result = await searchMainDashBoardInfo(apiList, startDate.toISOString(), endDate.toISOString());
-  const buckets = result.aggregations.api_name.buckets;
-
-  for (let i = 0; i < authOrderList.length; i++) {
-    for (let j = 0; j < buckets.length; j++) {
-      if (buckets[j].key === authOrderList[i].api) {
-          authOrderList[i].cnt = buckets[j].doc_count;
-      }
-    }
-  }
-  for (let i = 0; i < oopayOrderList.length; i++) {
-    for (let j = 0; j < buckets.length; j++) {
-      if (buckets[j].key === oopayOrderList[i].api) {
-        oopayOrderList[i].cnt = buckets[j].doc_count;
-        if(type === 'Y') {
-          oopayOrderList[i].yesterdayCnt = buckets[j].doc_count;
+    for (let i = 0; i < authOrderList.length; i++) {
+      for (let j = 0; j < buckets.length; j++) {
+        if (buckets[j].key === authOrderList[i].api) {
+            authOrderList[i].cnt = buckets[j].doc_count;
         }
       }
     }
-  }
+    for (let i = 0; i < oopayOrderList.length; i++) {
+      for (let j = 0; j < buckets.length; j++) {
+        if (buckets[j].key === oopayOrderList[i].api) {
+          oopayOrderList[i].cnt = buckets[j].doc_count;
+          if(type === 'Y') {
+            oopayOrderList[i].yesterdayCnt = buckets[j].doc_count;
+          }
+        }
+      }
+    }
 
-  // 차트가 안그려진다면 데이터 세팅하고 호출하는 방법 찾기 
-  setAuthChart();
-  setOOPayChart();
+    // 차트가 안그려진다면 데이터 세팅하고 호출하는 방법 찾기 
+    setAuthChart();
+    setOOPayChart();
+    isInvalid.value = false;
+  }catch(error){
+    isInvalid.value = true;
+    console.log(error);
+  }
+  
 }
 
 onBeforeMount(() => {
   var today = new Date();
   var yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
 
   setColorOptions();
-  if(import.meta.env.MODE === 'L' || import.meta.env.MODE === 'D') {
+  if(import.meta.env.MODE === 'L') {
     getTempInfo();
   }else{
     getAppCardInfo('T', new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
-    getAppCardInfo('Y', new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
+    getAppCardInfo('Y', new Date(yesterday).setHours(0, 0, 0, 0), new Date(yesterday).setHours(23, 59, 59, 999));
   }
 })
 
@@ -218,13 +228,45 @@ onBeforeMount(() => {
   <div class="col-12 xl:col-6">
     <div class="card flex flex-column align-items-center">
         <h5 class="text-left w-full">인증 요청</h5>
-        <Chart type="pie" :data="authTypes" :options="authOptions"></Chart>
+        <Chart v-if="!isInvalid"  type="pie" :data="authTypes" :options="authOptions"></Chart>
+          <div v-if="isInvalid" class=" align-items-center justify-content-center  overflow-hidden">
+            <div class="flex flex-column align-items-center justify-content-center">
+                <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
+                    <div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">
+                        <div class="grid flex flex-column align-items-center">
+                            <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
+                                <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+                            </div>
+                            <h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+                            <span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
+                            <img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
   <div class="col-12 xl:col-6">
     <div class="card align-items-center">
         <h5 class="text-left w-full">ooPay등록</h5>
-        <Chart type="bar" :data="oopayTypes" :options="oopayOptions"></Chart>
+        <Chart v-if="!isInvalid" type="bar" :data="oopayTypes" :options="oopayOptions"></Chart>
+        <div v-if="isInvalid" class="align-items-center justify-content-center  overflow-hidden">
+          <div class="flex flex-column align-items-center justify-content-center">
+              <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
+                  <div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">
+                      <div class="grid flex flex-column align-items-center">
+                          <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
+                              <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
+                          </div>
+                          <h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+                          <span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
+                          <img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>
