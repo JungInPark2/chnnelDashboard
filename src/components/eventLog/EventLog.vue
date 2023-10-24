@@ -82,9 +82,8 @@ const search = async () => {
 		eventList.value = response.hits.hits;
 		isData.value = true;
 
-		console.log('response:' + response);
-
 		eventList.value.forEach((event) => {
+			console.log('event._source:' + event._source);
 			event.value = event._source;	
 			if(event.value.hc){
 				event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
