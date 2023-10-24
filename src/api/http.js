@@ -5,7 +5,7 @@ import setupMock from "@/api/mock/setupMock";
 const http = axios.create({
     headers: {
         'Content-type': 'application/json',
-        'Authorization': 'ApiKey import.meta.env.VITE_APP_API_KEY'
+        'Authorization': 'ApiKey '+import.meta.env.VITE_APP_API_KEY
     },
     baseURL: import.meta.env.VITE_APP_API_URL,
     timeout:10000    // 타임아웃 설정 (10초)
