@@ -2,27 +2,9 @@ import http from "./http";
 
 const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, csno) => {
     try {
-        const response = await http.post('/logs-transaction-channel/_search', {
-            size: 10000,
-            _source: false,
-            fields: [
-                "@timestamp",
-                "hc.guid.fst",
-                "hc.guid.now",
-                "hc.transaction.common.TRM_IPAD",
-                "hc.csno",
-                "event.category",
-                "message"
-            ],
-            sort: [
-                {
-                    "@timestamp": {
-                        "order": "asc"
-                    }
-                }
-            ],
-            query: {
-                bool: {
+
+        const queryObj = {
+            bool: {
                     filter: [
                         {
                             range: {
@@ -36,25 +18,54 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
                             terms: {
                                 "hc.service.name": [serviceName]
                             }
-                        },
-                        {
-                            terms: {
-                                "hc.guid.now": [guid]
-                            }
-                        },
-                        {
-                            terms: {
-                                "hc.transaction.common.TRM_IPAD": [ipAddress]
-                            }
-                        },
-                        {
-                            terms: {
-                                "hc.csno": [csno]
-                            }
                         }
                     ]
                 }
-            }
+        };
+
+        if (guid) {
+            queryObj.bool.filter.push({
+                terms: {
+                    "hc.guid.now": [guid]
+                }
+            });
+        }
+        if (ipAddress) {
+            queryObj.bool.filter.push({
+                terms: {
+                    "hc.transaction.common.TRM_IPAD": [ipAddress]
+                }
+            });
+        }
+        if (csno) {
+            queryObj.bool.filter.push({
+                terms: {
+                    "hc.csno": [csno]
+                }
+            });
+        }
+
+        const response = await http.post('/logs-transaction-channel/_search', {
+            size: 10000,
+            _source: false,
+            fields: [
+                "@timestamp",
+                "hc.guid.fst",
+                "hc.guid.now",
+                "hc.transaction.common.TRM_IPAD",
+                "hc.csno",
+                "hc.event.category",
+                "hc.transaction.common.TRX_CD",
+                "message"
+            ],
+            sort: [
+                {
+                    "@timestamp": {
+                        "order": "asc"
+                    }
+                }
+            ],
+            query: queryObj
         });
         
         return response.data;

@@ -42,14 +42,14 @@ const validateIpAddress = (event) => {
 };
 
 const validateIqrySrtDttm = () => {
-    return iqrySrtDttm.value ? true : '조회시작일시를 입력해주세요.';
+    return iqrySrtDttm.value ? true : '조회 시작일을 입력해주세요.';
 };
 
 const validateIqryEndDttm = () => {
     if (!iqryEndDttm.value) {
-        return '조회종료일시를 입력해주세요.';
+        return '조회 종료일을 입력해주세요.';
     }else if(new Date(iqryEndDttm.value) < new Date(iqrySrtDttm.value)){
-        return '조회 종료일시는 조회 시작일시보다 뒤여야 합니다.';
+        return '조회 종료일은 조회 시작일 보다 뒤여야 합니다.';
     }else{
         return true;
     }
@@ -85,6 +85,18 @@ const fetchData = async () => {
 
     loading.value = true;
 
+    if (iqrySrtDttm.value) {
+        const startDate = new Date(iqrySrtDttm.value);
+        startDate.setHours(0, 0, 0, 0);
+        iqrySrtDttm.value = startDate;
+    }
+
+    if (iqryEndDttm.value) {
+        const endDate = new Date(iqryEndDttm.value);
+        endDate.setHours(23, 59, 59, 999);
+        iqryEndDttm.value = endDate;
+    }
+
     // API 호출
     const response = await searchXmpLogInfo(selectedCode,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
 
@@ -109,8 +121,9 @@ const fetchData = async () => {
                 guid: hit.fields["hc.guid.fst"] ? hit.fields["hc.guid.fst"][0] : '',
                 ipAddress: hit.fields["hc.transaction.common.TRM_IPAD"] ? hit.fields["hc.transaction.common.TRM_IPAD"].join(', ') : '',
                 csno: hit.fields["hc.csno"] ? hit.fields["hc.csno"][0] : '',
-                sarClsf: hit.fields["event.category"] ? hit.fields["event.category"][0] : '',
-                xmpLog: hit.fields["message"] ? hit.fields["message"][0] : ''
+                sarClsf: hit.fields["hc.event.category"] ? hit.fields["hc.event.category"][0] : '',
+                xmpLog: hit.fields["message"] ? hit.fields["message"][0] : '',
+                xmpId:  hit.fields["hc.transaction.common.TRX_CD"] ? hit.fields["hc.transaction.common.TRX_CD"][0] : ''
             };
         });
         } catch(error) {
@@ -139,15 +152,15 @@ const fetchData = async () => {
                                     </div>
                                     <div class="col-12 md:col-3">
                                         <span class="p-float-label">
-                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqrySrtDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
-                                            <label for="calendar-24h">조회시작일시</label>
+                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqrySrtDttm" hourFormat="24" dateFormat="yy.mm.dd" />
+                                            <label for="calendar-24h">조회 시작일</label>
                                         </span>
                                         <small class="p-error" id="text-error">{{ errorMessageIqrySrtDttm || '&nbsp;' }}</small>
                                     </div>
                                     <div class="col-12 md:col-3">
                                         <span class="p-float-label">
-                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqryEndDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
-                                            <label for="calendar-24h">조회종료일시</label>
+                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqryEndDttm" hourFormat="24" dateFormat="yy.mm.dd" />
+                                            <label for="calendar-24h">조회 종료일</label>
                                         </span>
                                         <small class="p-error" id="text-error">{{ errorMessageIqryEndDttm || '&nbsp;' }}</small>
                                     </div>
@@ -199,6 +212,7 @@ const fetchData = async () => {
                                 </template>
 					            <template #loading></template>
                                 <Column field="dttm" header="일시" sortable style="width: 20%"></Column>
+                                <Column field="xmpId" header="전문ID" sortable style="width: 20%"></Column>
                                 <Column field="guid" header="GUID" sortable style="width: 20%"></Column>
                                 <Column field="ipAddress" header="IP주소" sortable style="width: 20%"></Column>
                                 <Column field="csno" header="고객번호" sortable style="width: 10%"></Column>
