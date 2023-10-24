@@ -34,7 +34,7 @@ const ip = ref(null);
 const loading = ref(false);
 const isInvalid = ref(false);
 const api = ref(null);
-const isData = ref(false);
+const isData = ref(true);
 const eventList = ref(null);
 const errorCode = ref(null);
 
@@ -81,6 +81,8 @@ const search = async () => {
 
 		eventList.value = response.hits.hits;
 		isData.value = true;
+
+		console.log('response:' + response);
 
 		eventList.value.forEach((event) => {
 			event.value = event._source;	
