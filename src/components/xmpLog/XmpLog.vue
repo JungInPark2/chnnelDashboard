@@ -80,7 +80,7 @@ const fetchData = async () => {
 
     // 전체를 선택한 경우
     if (selectedCode === 'ALL') {
-        selectedCode = ['mx', 'appcard'];
+        selectedCode = 'mx', 'appcard';
     }
 
     loading.value = true;
@@ -101,6 +101,7 @@ const fetchData = async () => {
     const response = await searchXmpLogInfo(selectedCode,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
 
     apiResponse.value = response;
+    loading.value = false;
     
     // API 응답에서 필요한 데이터 추출
     try{
@@ -127,10 +128,11 @@ const fetchData = async () => {
             };
         });
         } catch(error) {
+            loading.value = false;
             errorMessage.value = "데이터 조회 중 오류가 발생하였습니다.";
         }
     
-    loading.value = false
+    loading.value = false;
 };
 </script>
 
