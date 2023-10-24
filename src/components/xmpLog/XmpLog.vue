@@ -76,14 +76,13 @@ const onSubmit = handleSubmit(() => {
 // API 호출 함수
 const fetchData = async () => {
 
-    let selectedCode = dropdownValue.value.code;
-
-    // 전체를 선택한 경우
-    if (selectedCode === 'ALL') {
-        selectedCode = 'mx', 'appcard';
-    }
-
-    loading.value = true;
+    const serverList = [];
+	if(dropdownValue.value.code == 'ALL') {
+		serverList.push('mx');
+		serverList.push('appcard');
+	}else{
+		serverList.push(dropdownValue.value.code);
+	}
 
     if (iqrySrtDttm.value) {
         const startDate = new Date(iqrySrtDttm.value);
@@ -97,14 +96,17 @@ const fetchData = async () => {
         iqryEndDttm.value = endDate;
     }
 
-    // API 호출
-    const response = await searchXmpLogInfo(selectedCode,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
+    loading.value = true;
 
-    apiResponse.value = response;
-    loading.value = false;
-    
-    // API 응답에서 필요한 데이터 추출
+    // API 호출
     try{
+        const response = await searchXmpLogInfo(serverList,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
+
+        apiResponse.value = response;
+        loading.value = false;
+        
+        // API 응답에서 필요한 데이터 추출
+    
         iqryCn.value = apiResponse.value.hits.hits.map(hit => {
             let formattedDttm = '',
                 originalDttm = hit.fields["@timestamp"] ? hit.fields["@timestamp"][0] : '';
@@ -214,9 +216,9 @@ const fetchData = async () => {
                                 </template>
 					            <template #loading></template>
                                 <Column field="dttm" header="일시" sortable style="width: 20%"></Column>
-                                <Column field="xmpId" header="전문ID" sortable style="width: 20%"></Column>
+                                <Column field="xmpId" header="전문ID" sortable style="width: 10%"></Column>
                                 <Column field="guid" header="GUID" sortable style="width: 20%"></Column>
-                                <Column field="ipAddress" header="IP주소" sortable style="width: 20%"></Column>
+                                <Column field="ipAddress" header="IP주소" sortable style="width: 10%"></Column>
                                 <Column field="csno" header="고객번호" sortable style="width: 10%"></Column>
                                 <Column field="sarClsf" header="구분" sortable style="width: 10%"></Column>
                                 <Column field="xmpLog" header="전문로그" sortable style="width: 20%"></Column>
