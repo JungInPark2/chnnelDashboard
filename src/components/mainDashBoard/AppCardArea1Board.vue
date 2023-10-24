@@ -17,26 +17,27 @@ const yesterDayoopayList = ref([]);
 const isInvalid = ref(false);
 
 const authOrderList = reactive([
-   {api : '/api/appcard/auth/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '', yesterdayCnt : '' }
-  ,{api : '/api/appcard/auth/ct/AUTCT010101.do', apiName : '공인인증', cnt : '', yesterdayCnt : '' }
-  ,{api : '/api/appcard/auth/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/auth/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/auth/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/auth/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '', yesterdayCnt:  '' }
+   {api : '/api/appcard/auth/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/auth/ct/AUTCT010101.do', apiName : '공인인증', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/auth/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/auth/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/auth/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/auth/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
 ])
+
 const oopayOrderList = reactive([
-   {api : '/api/appcard/prs/ap/PRSAP010201.do', apiName : 'ARS인증', cnt : '', yesterdayCnt : '' }
-  ,{api : '/api/appcard/prs/bm/PRSBM010201.do', apiName : '배민페이', cnt : '', yesterdayCnt : '' }
-  ,{api : '/api/appcard/prs/hc/PRSHC010201.do', apiName : 'carPay', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/kp/PRSKP020101.do', apiName : '카카오페이', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/lp/PRSLP010201.do', apiName : 'L.PAY', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/np/PRSNP020101.do', apiName : '네이버', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/np/PRSNP020201.do', apiName : '네이버인입', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/sg/PRSSG010201.do', apiName : 'SSG', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/sp/PRSSP020101.do', apiName : '스마일페이', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/sm/PRSSM010201.do', apiName : '삼성페이', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/st/PRSTO010201.do', apiName : '토스페이', cnt : '', yesterdayCnt:  '' }
-  ,{api : '/api/appcard/prs/tv/PRSTV010201.do', apiName : 'TV페이', cnt : '', yesterdayCnt:  '' }
+   {api : '/api/appcard/prs/ap/PRSAP010201.do', apiName : 'Apple pay', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/prs/bm/PRSBM010201.do', apiName : '배민페이', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/prs/hc/PRSHC010201.do', apiName : 'carPay', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/kp/PRSKP020101.do', apiName : '카카오페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/lp/PRSLP010201.do', apiName : 'L.PAY', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/np/PRSNP020101.do', apiName : '네이버', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/np/PRSNP020201.do', apiName : '네이버인입', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/sg/PRSSG010201.do', apiName : 'SSG', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/sp/PRSSP020101.do', apiName : '스마일페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/sm/PRSSM010201.do', apiName : '삼성페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/st/PRSTO010201.do', apiName : '토스페이', cnt : '0', yesterdayCnt:  '0' }
+  ,{api : '/api/appcard/prs/tv/PRSTV010201.do', apiName : 'TV페이', cnt : '0', yesterdayCnt:  '0' }
 ])
 
 const setColorOptions = () => {
@@ -76,12 +77,14 @@ const getTempInfo = () => {
 }
 
 const setAuthChart = () => {
+  const authOrderNameList = [];
   authOrderList.forEach(obj => {
     authList.value.push(obj.cnt);
+    authOrderNameList.push(obj.apiName);
   });
 
   authTypes.value = {
-    labels: ['ARS인증', '공인인증', 'fido인증', '카드비밀번호인증' , 'sms인증', '결제비밀번호인증'],
+    labels: authOrderNameList,
     datasets: [
         {
             data: authList.value,
@@ -106,13 +109,16 @@ const setAuthChart = () => {
 }
 
 const setOOPayChart = () => {
+  const oopayOrderNameList = [];
   oopayOrderList.forEach(obj => {
     oopayList.value.push(obj.cnt);
     yesterDayoopayList.value.push(obj.yesterdayCnt);
+    oopayOrderNameList.push(obj.apiName);
   });
 
+  //['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이']
   oopayTypes.value = {
-      labels: ['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이'],
+      labels: oopayOrderNameList,
       datasets: [
           {
               label: '하루전',
@@ -187,8 +193,9 @@ const getAppCardInfo = async (type, startDate, endDate) => {
     for (let i = 0; i < oopayOrderList.length; i++) {
       for (let j = 0; j < buckets.length; j++) {
         if (buckets[j].key === oopayOrderList[i].api) {
-          oopayOrderList[i].cnt = buckets[j].doc_count;
-          if(type === 'Y') {
+          if(type === 'T') {
+            oopayOrderList[i].cnt = buckets[j].doc_count;
+          }else{
             oopayOrderList[i].yesterdayCnt = buckets[j].doc_count;
           }
         }
@@ -208,13 +215,14 @@ const getAppCardInfo = async (type, startDate, endDate) => {
 
 onBeforeMount(() => {
   const now = new Date();
-  const srtTimeToday = new Date(now).setHours(0, 0, 0, 0);
+  const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
   const endTimeToday = now.toISOString();
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  const srtTimeYesterday = new Date(yesterday).setHours(0, 0, 0, 0);
-  const endTimeYesterday = new Date(yesterday).setHours(23, 59, 59, 999);
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 0, 0, 0, 0));
+  const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
   setColorOptions();
   if(import.meta.env.MODE === 'L') {

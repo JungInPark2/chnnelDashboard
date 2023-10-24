@@ -61,18 +61,17 @@ const searchTempCommonAreaInfo = () => {
 
 onBeforeMount(() => {
   const now = new Date();
-  const srtTimeToday = new Date(now).setHours(0, 0, 0, 0);
-  const endTimeToday = now.toISOString();
+  const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
 
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const srtTimeYesterday = new Date(yesterday).setHours(0, 0, 0, 0);
-  const endTimeYesterday = new Date(yesterday).setHours(23, 59, 59, 999);
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 0, 0, 0, 0));
+  const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
   if(import.meta.env.MODE === 'L') {
     searchTempCommonAreaInfo();
   }else{
-    searchCommonAreaInfo('T' , new Date(srtTimeToday).toISOString(), endTimeToday);
+    searchCommonAreaInfo('T' , new Date(srtTimeToday).toISOString(), new Date(now).toISOString());
     searchCommonAreaInfo('Y' , new Date(srtTimeYesterday).toISOString(), new Date(endTimeYesterday).toISOString());
   }
 })
@@ -83,12 +82,13 @@ onBeforeMount(() => {
         <div class="card mb-0">
             <div class="flex justify-content-between mb-3">
                 <div>
-                    <span class="block text-500 font-medium mb-3">{{ item.apiName }}</span>
+                    <span class="block text-700 font-medium mb-3">{{ item.apiName }}</span>
                     <div class="text-900 font-medium text-xl">{{ item.cnt }}</div>
                 </div>
             </div>
             <span v-if="!isInvalid" class="text-green-500 font-medium">하루 전  </span>
             <span v-if="!isInvalid" class="text-500"> {{ item.yesterdayCnt }} </span>
+            <span v-if="!isInvalid" class="text-yellow-500"> ({{(((item.cnt - item.yesterdayCnt) / item.yesterdayCnt) * 100).toFixed(2)}}%)</span>
             <div v-if="isInvalid" class="surface-ground  align-items-center justify-content-center  overflow-hidden">
               <div class="flex flex-column align-items-center justify-content-center">
                     <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">

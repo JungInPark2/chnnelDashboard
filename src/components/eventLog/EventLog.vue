@@ -35,8 +35,8 @@ const loading = ref(false);
 const isInvalid = ref(false);
 const api = ref(null);
 const isData = ref(true);
+const errorMessage = ref('');
 const eventList = ref(null);
-const errorCode = ref(null);
 
 onBeforeMount(() => {
 	if(import.meta.env.MODE === 'L') {
@@ -77,32 +77,38 @@ const search = async () => {
 	
 	try{
 		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
+
+		fetch('demo/event.json')
+		.then((res) => res.json())
+		.then((response) => { 
+
 		loading.value = false;
 
 		eventList.value = response.hits.hits;
 		isData.value = true;
 
 		eventList.value.forEach((event) => {
-			console.log('event._source:' + event._source);
 			event.value = event._source;	
 			if(event.value.hc){
 				event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
 				event.csno = event.value.hc ? event.value.hc.csno : '';
 				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
 				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
-				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
-				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message.replace(/^"|"$/g, '') : '';
+				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message.replace(/^"|"$/g, '') : '';
 				event.duration = event.value.hc ? event.value.hc.api.duration : '';
 				event.service = event.value.hc.service ? event.value.hc.service.name : '';
 				event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
 			}
 			event.instance = event.value.agent ? event.value.agent.name : '';
 			event.ip = event.value.source ? event.value.source.ip : '';
-		});
+		});  
+	})
 
 	}catch (error) {
 		//eventList.value = [];
     isData.value = false;
+		errorMessage.value = error.message;
   }
 	
 };
@@ -118,7 +124,7 @@ const searchTempInfo = () => {
 				if(event.value.hc){
 					event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
 					event.csno = event.value.hc ? event.value.hc.csno : '';
-					event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
+					event.os = event.value.hc ? event.value.hc.os.platform + ' (' + event.value.hc.os.version + ')' : '';
 					event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
 					event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
 					event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
@@ -290,7 +296,7 @@ const searchTempInfo = () => {
 												<div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
 														<i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
 												</div>
-												<h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+												<h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorMessage }}</h1>
 												<span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
 												<img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
 										</div>
