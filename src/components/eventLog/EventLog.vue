@@ -16,7 +16,16 @@ const instanceValues = ref([
     ,{ name: 'mx41', code: 'mx41' }, { name: 'mx42', code: 'mx42' }, { name: 'mx43', code: 'mx43' }, { name: 'mx44', code: 'mx44' }, { name: 'mx45', code: 'mx45' }, { name: 'mx46', code: 'mx46' }
     ,{ name: 'mx51', code: 'mx51' }, { name: 'mx52', code: 'mx52' }, { name: 'mx53', code: 'mx53' }, { name: 'mx54', code: 'mx54' }, { name: 'mx55', code: 'mx55' }, { name: 'mx56', code: 'mx56' }
     ,{ name: 'mx61', code: 'mx61' }, { name: 'mx62', code: 'mx62' }, { name: 'mx63', code: 'mx63' }, { name: 'mx64', code: 'mx64' }, { name: 'mx65', code: 'mx65' }, { name: 'mx66', code: 'mx66' }
+
+		,{ name: 'L_appcd51', code: 'L_appcd51' }, { name: 'L_appcd52', code: 'L_appcd52' }, { name: 'L_appcd53', code: 'L_appcd53' }, { name: 'L_appcd54', code: 'L_appcd54' }, { name: 'L_appcd55', code: 'L_appcd55' }
+		,{ name: 'L_appcd56', code: 'L_appcd56' }, { name: 'L_appcd57', code: 'L_appcd57' }, { name: 'L_appcd58', code: 'L_appcd58' }, { name: 'L_appcd59', code: 'L_appcd59' }
+		,{ name: 'L_appcd61', code: 'L_appcd61' }, { name: 'L_appcd62', code: 'L_appcd62' }, { name: 'L_appcd63', code: 'L_appcd63' }, { name: 'L_appcd64', code: 'L_appcd64' }, { name: 'L_appcd65', code: 'L_appcd65' }
 ]);
+
+if(import.meta.env.MODE === 'D' || import.meta.env.MODE === 'T'){
+	instanceValues.value.push({name:'dtwbap13', code: 'dtwbap13'})
+}
+
 
 const serverType = ref(serverTypes.value[0]);
 const instanceValue = ref(instanceValues);
@@ -98,7 +107,6 @@ const search = async () => {
 		}else{
 			eventList.value = [];
 			errorCode.value = response.response.status;
-			isData.value = false;
 		}
 
 	}catch (error) {
