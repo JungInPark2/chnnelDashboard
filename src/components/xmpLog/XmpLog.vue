@@ -9,7 +9,6 @@ const iqryCn = ref();
 
 // 입력 필드
 const dropdownValues = ref([
-    { name: '전체', code: 'ALL' },
     { name: 'MX', code: 'mx' },
     { name: '앱카드', code: 'appcard' }
 ]);
@@ -76,14 +75,6 @@ const onSubmit = handleSubmit(() => {
 // API 호출 함수
 const fetchData = async () => {
 
-    const serverList = [];
-	if(dropdownValue.value.code == 'ALL') {
-		serverList.push('mx');
-		serverList.push('appcard');
-	}else{
-		serverList.push(dropdownValue.value.code);
-	}
-
     if (iqrySrtDttm.value) {
         const startDate = new Date(iqrySrtDttm.value);
         startDate.setHours(0, 0, 0, 0);
@@ -100,7 +91,7 @@ const fetchData = async () => {
 
     // API 호출
     try{
-        const response = await searchXmpLogInfo(serverList,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
+        const response = await searchXmpLogInfo(dropdownValue.value.code,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
 
         apiResponse.value = response;
         loading.value = false;
@@ -132,8 +123,6 @@ const fetchData = async () => {
             loading.value = false;
             errorMessage.value = "데이터 조회 중 오류가 발생하였습니다.";
         }
-    
-    loading.value = false;
 };
 </script>
 
@@ -213,7 +202,7 @@ const fetchData = async () => {
                                     <div class="centered-content" v-if="!errorMessage">조회된 결과가 없습니다.</div>
                                     <div class="p-error centered-content" v-if="errorMessage">{{ errorMessage }}</div>
                                 </template>
-					            <template #loading></template>
+					            <template #loading> 조회중 입니다. 잠시만 기다려 주세요.</template>
                                 <Column field="dttm" header="일시" sortable style="width: 20%"></Column>
                                 <Column field="xmpId" header="전문ID" sortable style="width: 10%"></Column>
                                 <Column field="guid" header="GUID" sortable style="width: 20%"></Column>
