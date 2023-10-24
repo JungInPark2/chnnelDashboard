@@ -106,7 +106,6 @@ const fetchData = async () => {
         loading.value = false;
         
         // API 응답에서 필요한 데이터 추출
-    
         iqryCn.value = apiResponse.value.hits.hits.map(hit => {
             let formattedDttm = '',
                 originalDttm = hit.fields["@timestamp"] ? hit.fields["@timestamp"][0] : '';
