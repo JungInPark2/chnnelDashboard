@@ -34,7 +34,7 @@ const ip = ref(null);
 const loading = ref(false);
 const isInvalid = ref(false);
 const api = ref(null);
-const isData = ref(true);
+const isData = ref(false);
 const eventList = ref(null);
 const errorCode = ref(null);
 
