@@ -8,7 +8,6 @@ const serverTypes = ref([
     { name: 'MX', code: 'mx' },
     { name: '앱카드', code: 'appcard' }
 ]);
-
 const instanceValues = ref([
 		{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
     ,{ name: 'mx21', code: 'mx21' }, { name: 'mx22', code: 'mx22' }, { name: 'mx23', code: 'mx23' }, { name: 'mx24', code: 'mx24' }, { name: 'mx25', code: 'mx25' }, { name: 'mx26', code: 'mx26' }
@@ -16,7 +15,6 @@ const instanceValues = ref([
     ,{ name: 'mx41', code: 'mx41' }, { name: 'mx42', code: 'mx42' }, { name: 'mx43', code: 'mx43' }, { name: 'mx44', code: 'mx44' }, { name: 'mx45', code: 'mx45' }, { name: 'mx46', code: 'mx46' }
     ,{ name: 'mx51', code: 'mx51' }, { name: 'mx52', code: 'mx52' }, { name: 'mx53', code: 'mx53' }, { name: 'mx54', code: 'mx54' }, { name: 'mx55', code: 'mx55' }, { name: 'mx56', code: 'mx56' }
     ,{ name: 'mx61', code: 'mx61' }, { name: 'mx62', code: 'mx62' }, { name: 'mx63', code: 'mx63' }, { name: 'mx64', code: 'mx64' }, { name: 'mx65', code: 'mx65' }, { name: 'mx66', code: 'mx66' }
-
 		,{ name: 'L_appcd51', code: 'L_appcd51' }, { name: 'L_appcd52', code: 'L_appcd52' }, { name: 'L_appcd53', code: 'L_appcd53' }, { name: 'L_appcd54', code: 'L_appcd54' }, { name: 'L_appcd55', code: 'L_appcd55' }
 		,{ name: 'L_appcd56', code: 'L_appcd56' }, { name: 'L_appcd57', code: 'L_appcd57' }, { name: 'L_appcd58', code: 'L_appcd58' }, { name: 'L_appcd59', code: 'L_appcd59' }
 		,{ name: 'L_appcd61', code: 'L_appcd61' }, { name: 'L_appcd62', code: 'L_appcd62' }, { name: 'L_appcd63', code: 'L_appcd63' }, { name: 'L_appcd64', code: 'L_appcd64' }, { name: 'L_appcd65', code: 'L_appcd65' }
@@ -25,7 +23,6 @@ const instanceValues = ref([
 if(import.meta.env.MODE === 'D' || import.meta.env.MODE === 'T'){
 	instanceValues.value.push({name:'dtwbap13', code: 'dtwbap13'})
 }
-
 
 const serverType = ref(serverTypes.value[0]);
 const instanceValue = ref(instanceValues);
@@ -79,35 +76,28 @@ const search = async () => {
 	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
 	
 	try{
-
 		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
 		loading.value = false;
-		if(response.response.status == 200){
 
-			eventList.value = d.hits.hits;
-			isData.value = true;
+		eventList.value = response.hits.hits;
+		isData.value = true;
 
-			eventList.value.forEach((event) => {
-				event.value = event._source;	
-				if(event.value.hc){
-					event.time = event.value.hc ? hc.event.res.parsed.hdr.srvrDt + ' ' + hc.event.res.parsed.hdr.srvrEltm : '';
-					event.csno = event.value.hc ? event.value.hc.csno : '';
-					event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
-					event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
-					event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
-					event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
-					event.duration = event.value.hc ? event.value.hc.api.duration : '';
-					event.service = hc.service.name;
-					event.resltcd = hc.event.res.parsed.hdr.rsltCd;
-				}
-				event.instance = event.value.agent ? event.value.agent.name : '';
-				event.ip = event.value.source ? event.value.source.ip : '';
-			});
-			
-		}else{
-			eventList.value = [];
-			errorCode.value = response.response.status;
-		}
+		eventList.value.forEach((event) => {
+			event.value = event._source;	
+			if(event.value.hc){
+				event.time = event.value.hc ? hc.event.res.parsed.hdr.srvrDt + ' ' + hc.event.res.parsed.hdr.srvrEltm : '';
+				event.csno = event.value.hc ? event.value.hc.csno : '';
+				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
+				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
+				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+				event.duration = event.value.hc ? event.value.hc.api.duration : '';
+				event.service = hc.service.name;
+				event.resltcd = hc.event.res.parsed.hdr.rsltCd;
+			}
+			event.instance = event.value.agent ? event.value.agent.name : '';
+			event.ip = event.value.source ? event.value.source.ip : '';
+		});
 
 	}catch (error) {
 		eventList.value = [];

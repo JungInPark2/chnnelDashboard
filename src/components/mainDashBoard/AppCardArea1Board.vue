@@ -163,8 +163,6 @@ const setOOPayChart = () => {
     };
 }
 
-
-
 const getAppCardInfo = async (type, startDate, endDate) => {
 
   const apiList = [];
@@ -209,16 +207,21 @@ const getAppCardInfo = async (type, startDate, endDate) => {
 }
 
 onBeforeMount(() => {
-  var today = new Date();
-  var yesterday = new Date(today);
+  const now = new Date();
+  const srtTimeToday = new Date(now).setHours(0, 0, 0, 0);
+  const endTimeToday = now.toISOString();
+
+  const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
+  const srtTimeYesterday = new Date(yesterday).setHours(0, 0, 0, 0);
+  const endTimeYesterday = new Date(yesterday).setHours(23, 59, 59, 999);
 
   setColorOptions();
   if(import.meta.env.MODE === 'L') {
     getTempInfo();
   }else{
-    getAppCardInfo('T', new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), new Date());
-    getAppCardInfo('Y', new Date(yesterday).setHours(0, 0, 0, 0), new Date(yesterday).setHours(23, 59, 59, 999));
+    getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday);
+    getAppCardInfo('Y', new Date(srtTimeYesterday).toISOString(), new Date(endTimeYesterday).toISOString());
   }
 })
 
