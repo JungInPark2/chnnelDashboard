@@ -87,22 +87,22 @@ const search = async () => {
 		eventList.value.forEach((event) => {
 			event.value = event._source;	
 			if(event.value.hc){
-				event.time = event.value.hc ? hc.event.res.parsed.hdr.srvrDt + ' ' + hc.event.res.parsed.hdr.srvrEltm : '';
+				event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
 				event.csno = event.value.hc ? event.value.hc.csno : '';
 				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
 				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
 				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
 				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
 				event.duration = event.value.hc ? event.value.hc.api.duration : '';
-				event.service = hc.service.name;
-				event.resltcd = hc.event.res.parsed.hdr.rsltCd;
+				event.service = event.value.hc.service ? event.value.hc.service.name : '';
+				event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
 			}
 			event.instance = event.value.agent ? event.value.agent.name : '';
 			event.ip = event.value.source ? event.value.source.ip : '';
 		});
 
 	}catch (error) {
-		eventList.value = [];
+		//eventList.value = [];
     isData.value = false;
   }
 	
