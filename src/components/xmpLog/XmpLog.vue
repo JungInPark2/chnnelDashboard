@@ -202,7 +202,7 @@ const fetchData = async () => {
                                     <div class="centered-content" v-if="!errorMessage">조회된 결과가 없습니다.</div>
                                     <div class="p-error centered-content" v-if="errorMessage">{{ errorMessage }}</div>
                                 </template>
-					            <template #loading> 조회중 입니다. 잠시만 기다려 주세요.</template>
+					            <template #loading> </template>
                                 <Column field="dttm" header="일시" sortable style="width: 20%"></Column>
                                 <Column field="xmpId" header="전문ID" sortable style="width: 10%"></Column>
                                 <Column field="guid" header="GUID" sortable style="width: 20%"></Column>
