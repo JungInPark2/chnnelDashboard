@@ -436,6 +436,24 @@ const getShtrCardLoanRto = (count) => {
                         </div>
                     </div>
                 </li>
+                <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                    <div style="width: 450px;">
+                        <span class="text-900 font-medium mr-2 mb-1 md:mb-0"></span>
+                        <div class="mt-1 text-600"></div>
+                    </div>
+                    <div class="mt-2 md:mt-0 flex flex-column align-items-center ml-3 w-full">
+                        <div class="flex align-items-center w-full mb-2">
+                            <div class="surface-300 border-round overflow-hidden w-full mr-5">
+                            </div>
+                            <span class="ml-3 font-medium">&nbsp;</span>
+                        </div>
+                        <div class="flex align-items-center w-full mb-2">
+                            <div class="surface-300 border-round overflow-hidden w-full mr-5">
+                            </div>
+                            <span class="text-gray-500 ml-3 font-medium">&nbsp;</span>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
