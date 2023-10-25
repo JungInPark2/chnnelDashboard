@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeMount, reactive, ref } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
+import { utils } from '@/utils/utils';
 
 // 장기카드대출
 const bfdtLtmCardLoan = ref({});
@@ -32,14 +33,14 @@ const getLtmCardLoan = async () => {
 
     const apiNames = ['/web/fin/ll/FINLL010103.do','/web/fin/ll/FINLL020103.do','/web/fin/ll/FINLL020203.do','/web/fin/ll/FINLL020901.do','/web/fin/ll/FINLL020401.do','/web/fin/ll/FINLL020801.do','/web/fin/ll/FINLL020501.do'];
 
-    // 전일자 00시 UTC부터 전일자 23시 59분 59초 UTC까지
+    // 전일자 시간 구하기
     const yesterday = new Date();
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 0, 0, 0, 0));
+    const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
     const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
     try{
-        const searchBfdtLtmCardLoan = await searchMainDashBoardInfo(apiNames, new Date(srtTimeYesterday).toISOString(), new Date(endTimeYesterday).toISOString())
+        const searchBfdtLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday.toISOString(), endTimeYesterday.toISOString())
         bfdtLtmCardLoan.value = searchBfdtLtmCardLoan;
 
         apiNames.forEach(apiName => {
@@ -53,13 +54,14 @@ const getLtmCardLoan = async () => {
             errorMessageLtmCardLoan.value = 'API 호출 중 오류가 발생했습니다.';
         }
     }
-    // 오늘 00시 UTC부터 현재 UTC 시간까지
+
+    // 오늘자 시간 구하기
     const now = new Date();
-    const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
-    const endTimeToday = now; // 현재 UTC 시간까지
+    const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const endTimeToday = utils.toISOStringWithLocalOffset(now);
 
     try{
-        const searchTodyLtmCardLoan = await searchMainDashBoardInfo(apiNames, new Date(srtTimeToday).toISOString(), endTimeToday);
+        const searchTodyLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday.toISOString(), endTimeToday);
         todyLtmCardLoan.value = searchTodyLtmCardLoan;
 
         apiNames.forEach(apiName => {
@@ -79,17 +81,16 @@ const getLtmCardLoan = async () => {
 // 단기카드대출
 const getShtrCardLoan = async () => {
 
-
     const apiNames = ['/web/fin/sl/FINSL010101.do','/web/fin/sl/FINSL020101.do','/web/fin/sl/FINSL090101.do','/web/fin/sl/FINSL100102.do','/web/fin/at/FINAT020101.do','/web/fin/sl/FINSL040101.do'];
 
-    // 전일자 00시 UTC부터 전일자 23시 59분 59초 UTC까지
+    // 전일자 시간 구하기
     const yesterday = new Date();
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 0, 0, 0, 0));
+    const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
     const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
     try{
-        const searchBfdtShtrCardLoan = await searchMainDashBoardInfo(apiNames, new Date(srtTimeYesterday).toISOString(), new Date(endTimeYesterday).toISOString())
+        const searchBfdtShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday.toISOString(), endTimeYesterday.toISOString())
         bfdtShtrCardLoan.value = searchBfdtShtrCardLoan;
 
         apiNames.forEach(apiName => {
@@ -104,13 +105,13 @@ const getShtrCardLoan = async () => {
         }
     }
 
-    // 오늘 00시 UTC부터 현재 UTC 시간까지
+    // 오늘자 시간 구하기
     const now = new Date();
-    const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
-    const endTimeToday = now; // 현재 UTC 시간까지
+    const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const endTimeToday = utils.toISOStringWithLocalOffset(now);
 
     try{
-        const searchTodyShtrCardLoan = await searchMainDashBoardInfo(apiNames, new Date(srtTimeToday).toISOString(), endTimeToday);
+        const searchTodyShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday.toISOString(), endTimeToday);
         todyShtrCardLoan.value = searchTodyShtrCardLoan;
 
         apiNames.forEach(apiName => {
