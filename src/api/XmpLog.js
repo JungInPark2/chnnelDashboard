@@ -1,6 +1,6 @@
 import http from "./http";
 
-const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, csno) => {
+const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, xmpID, ipAddress, csno) => {
     try {
 
         const queryObj = {
@@ -23,10 +23,10 @@ const searchXmpLogInfo = async (serviceName, gteDttm, lteDttm, guid, ipAddress, 
                 }
         };
 
-        if (guid) {
+        if (xmpID) {
             queryObj.bool.filter.push({
                 terms: {
-                    "hc.guid.now": [guid]
+                    "hc.transaction.common.TRX_CD": [xmpID]
                 }
             });
         }

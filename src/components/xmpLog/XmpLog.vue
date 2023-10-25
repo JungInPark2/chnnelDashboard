@@ -16,7 +16,7 @@ const dropdownValues = ref([
 const dropdownValue = ref(dropdownValues.value[0]); 
 const iqrySrtDttm = ref('');
 const iqryEndDttm = ref('');
-const guid = ref('');
+const xmpId = ref('');
 const ipAddress = ref('');
 const csno = ref('');
 const loading = ref(false);
@@ -25,9 +25,9 @@ const errorMessage = ref('');
 const { handleSubmit } = useForm();
 
 // Validation Check
-const validateGuid = (event) => {
+const validateXmpId = (event) => {
     event.target.value = event.target.value.replace(/[^A-Za-z0-9]/g, '');   // 숫자, 영문만 입력 가능
-    guid.value = event.target.value;
+    xmpId.value = event.target.value;
 };
 
 const validateCsno = (event) => {
@@ -55,8 +55,8 @@ const validateIqryEndDttm = () => {
 };
 
 const validateInputs = () => {
-    if (guid.value || ipAddress.value || csno.value) return true;
-    return "GUID, IP주소 또는 고객번호 중 하나 이상을 입력해주세요.";
+    if (xmpId.value || ipAddress.value || csno.value) return true;
+    return "전문ID, IP주소 또는 고객번호 중 하나 이상을 입력해주세요.";
 };
 
 const { errorMessage: errorMessageIqrySrtDttm } = useField('iqrySrtDttm', validateIqrySrtDttm);
@@ -91,7 +91,7 @@ const fetchData = async () => {
 
     // API 호출
     try{
-        const response = await searchXmpLogInfo(dropdownValue.value.code,iqrySrtDttm.value,iqryEndDttm.value,guid.value,ipAddress.value,csno.value);
+        const response = await searchXmpLogInfo(dropdownValue.value.code,iqrySrtDttm.value,iqryEndDttm.value,xmpId.value,ipAddress.value,csno.value);
 
         apiResponse.value = response;
         loading.value = false;
@@ -159,8 +159,8 @@ const fetchData = async () => {
                                     <div class="col-12 md:col-3">
                                         <span class="p-input-icon-left p-input-icon-right p-float-label">
                                             <i class="pi pi-file" />
-                                            <InputText id="guid" v-model="guid" type="text" @input.native="validateGuid" maxlength="32" />
-                                            <label for="guid">GUID</label>
+                                            <InputText id="xmpId" v-model="xmpId" type="text" @input.native="validateXmpId" maxlength="10" />
+                                            <label for="xmpId">전문ID</label>
                                             <i class="pi pi-search" />
                                         </span>
                                         <small class="p-error">{{ errorMessageInputs || '&nbsp;' }}</small>
@@ -171,7 +171,7 @@ const fetchData = async () => {
                                         <span class="p-input-icon-left p-input-icon-right p-float-label">
                                             <i class="pi pi-wifi" />
                                             <InputText id="ipAddress" v-model="ipAddress" type="text" @input.native="validateIpAddress" maxlength="15" />
-                                            <label for="guid">IP주소</label>
+                                            <label for="ipAddress">IP주소</label>
                                             <i class="pi pi-search" />
                                         </span>
                                         <small class="p-error">{{ errorMessageInputs || '&nbsp;' }}</small>
@@ -180,7 +180,7 @@ const fetchData = async () => {
                                         <span class="p-input-icon-left p-input-icon-right p-float-label">
                                             <i class="pi pi-user" />
                                             <InputText id="csno" v-model="csno" type="text" @input.native="validateCsno" maxlength="10" />
-                                            <label for="guid">고객번호</label>
+                                            <label for="csno">고객번호</label>
                                             <i class="pi pi-search" />
                                         </span>
                                         <small class="p-error">{{ errorMessageInputs || '&nbsp;' }}</small>
