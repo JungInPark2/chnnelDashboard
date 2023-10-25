@@ -248,7 +248,7 @@ onBeforeMount(() => {
                             <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
                                 <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
                             </div>
-                            <h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+                            <h1 class="text-900 font-bold text-5xl mb-2">Error Code </h1>
                             <span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
                             <img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
                         </div>
@@ -270,7 +270,7 @@ onBeforeMount(() => {
                           <div class="flex justify-content-center align-items-center bg-pink-500 border-circle" style="height: 3.2rem; width: 3.2rem">
                               <i class="pi pi-fw pi-exclamation-circle text-2xl text-white"></i>
                           </div>
-                          <h1 class="text-900 font-bold text-5xl mb-2">Error Code {{  errorCode }}</h1>
+                          <h1 class="text-900 font-bold text-5xl mb-2">Error Code </h1>
                           <span class="text-600 mb-5">통신 중 에러가 발생 하였습니다.</span>
                           <img src="/error/asset-error.svg" alt="Error" class="mb-5" width="80%" />
                       </div>

@@ -24,17 +24,18 @@ const searchEventLogInfo = async (serverList, instances, gteDttm, lteDttm, csno,
                                 "agent.name": instances
                             }
                         }
+                    ], must : [
+                        {
+                            wildcard : {
+                                "hc.api.name" : {
+                                    "value" : api
+                                }
+                            }
+                        }
                     ]
                 }
         };
 
-        if (api) {
-            queryObj.bool.filter.push({
-                terms: {
-                    "hc.api.name": [api]
-                }
-            });
-        }
         if (csno) {
             queryObj.bool.filter.push({
                 terms: {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount, reactive } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { searchEventLogInfo } from '@/api/eventLog';
 import JsonViewer from 'vue-json-viewer';
 
@@ -73,20 +73,14 @@ const search = async () => {
     instanceList.push(obj.code);
   });
 
-	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
+	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, '*' + api.value + "*");
 	
 	try{
-		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, api.value);
-
-		fetch('demo/event.json')
-		.then((res) => res.json())
-		.then((response) => { 
-
+		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value,  '*' + api.value + "*");
 		loading.value = false;
-
-		eventList.value = response.hits.hits;
 		isData.value = true;
 
+		eventList.value = response.hits.hits;
 		eventList.value.forEach((event) => {
 			event.value = event._source;	
 			if(event.value.hc){
@@ -94,16 +88,15 @@ const search = async () => {
 				event.csno = event.value.hc ? event.value.hc.csno : '';
 				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
 				event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
-				event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message.replace(/^"|"$/g, '') : '';
-				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message.replace(/^"|"$/g, '') : '';
 				event.duration = event.value.hc ? event.value.hc.api.duration : '';
 				event.service = event.value.hc.service ? event.value.hc.service.name : '';
 				event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
+				event.request  = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
 			}
 			event.instance = event.value.agent ? event.value.agent.name : '';
 			event.ip = event.value.source ? event.value.source.ip : '';
 		});  
-	})
 
 	}catch (error) {
 		//eventList.value = [];
@@ -120,22 +113,20 @@ const searchTempInfo = () => {
 				eventList.value = d.hits.hits;
 				eventList.value.forEach((event) => {
 				event.value = event._source;	
-
 				if(event.value.hc){
 					event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
 					event.csno = event.value.hc ? event.value.hc.csno : '';
 					event.os = event.value.hc ? event.value.hc.os.platform + ' (' + event.value.hc.os.version + ')' : '';
 					event.api = event.value.hc && event.value.hc.api ? event.value.hc.api.name : '';
-					event.request = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
-					event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
 					event.duration = event.value.hc ? event.value.hc.api.duration : '';
 					event.service = event.value.hc.service ? event.value.hc.service.name : '';
 					event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
+					event.request =  event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+					event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
 				}
 				event.instance = event.value.agent ? event.value.agent.name : '';
 				event.ip = event.value.source ? event.value.source.ip : '';
 			});
-
 			//loading.value = false;
 		})
 }
