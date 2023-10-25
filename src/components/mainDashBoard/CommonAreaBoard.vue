@@ -86,7 +86,7 @@ onBeforeMount(() => {
                     <div class="text-900 font-medium text-xl">{{ item.cnt }}</div>
                 </div>
             </div>
-            <span v-if="!isInvalid" class="text-green-500 font-medium">하루 전  </span>
+            <span v-if="!isInvalid" class="text-green-500 font-medium">전일자  </span>
             <span v-if="!isInvalid" class="text-500"> {{ item.yesterdayCnt }} </span>
             <span v-if="!isInvalid" class="text-yellow-500"> ({{(((item.cnt - item.yesterdayCnt) / item.yesterdayCnt) * 100).toFixed(2)}}%)</span>
             <div v-if="isInvalid" class="surface-ground  align-items-center justify-content-center  overflow-hidden">
@@ -107,5 +107,4 @@ onBeforeMount(() => {
             </div>
         </div>
     </div>
-  
 </template>

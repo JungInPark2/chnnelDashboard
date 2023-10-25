@@ -83,6 +83,17 @@ const setAuthChart = () => {
     authOrderNameList.push(obj.apiName);
   });
 
+  authOptions.value = {
+      plugins: {
+          legend: {
+              labels: {
+                  usePointStyle: true,
+                  color: textColor
+              }
+          }
+      }
+  };
+
   authTypes.value = {
     labels: authOrderNameList,
     datasets: [
@@ -96,45 +107,10 @@ const setAuthChart = () => {
     ]
   };
 
-  authOptions.value = {
-      plugins: {
-          legend: {
-              labels: {
-                  usePointStyle: true,
-                  color: textColor
-              }
-          }
-      }
-  };
 }
 
 const setOOPayChart = () => {
-  const oopayOrderNameList = [];
-  oopayOrderList.forEach(obj => {
-    oopayList.value.push(obj.cnt);
-    yesterDayoopayList.value.push(obj.yesterdayCnt);
-    oopayOrderNameList.push(obj.apiName);
-  });
-
-  //['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이']
-  oopayTypes.value = {
-      labels: oopayOrderNameList,
-      datasets: [
-          {
-              label: '하루전',
-              backgroundColor: documentStyle.getPropertyValue('--pink-200'),
-              borderColor: documentStyle.getPropertyValue('--pink-200'),
-              data: yesterDayoopayList.value
-          },
-          {
-              label: '오늘',
-              backgroundColor: documentStyle.getPropertyValue('--pink-500'),
-              borderColor: documentStyle.getPropertyValue('--pink-500'),
-              data: oopayList.value
-          }
-      ]
-  };
-
+  
   oopayOptions.value = {
         plugins: {
             legend: {
@@ -167,6 +143,33 @@ const setOOPayChart = () => {
             }
         }
     };
+
+    const oopayOrderNameList = [];
+    oopayOrderList.forEach(obj => {
+      oopayList.value.push(obj.cnt);
+      yesterDayoopayList.value.push(obj.yesterdayCnt);
+      oopayOrderNameList.push(obj.apiName);
+    });
+
+    //['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이']
+    oopayTypes.value = {
+        labels: oopayOrderNameList,
+        datasets: [
+            {
+                label: '전일자',
+                backgroundColor: documentStyle.getPropertyValue('--pink-200'),
+                borderColor: documentStyle.getPropertyValue('--pink-200'),
+                data: yesterDayoopayList.value
+            },
+            {
+                label: '오늘',
+                backgroundColor: documentStyle.getPropertyValue('--pink-500'),
+                borderColor: documentStyle.getPropertyValue('--pink-500'),
+                data: oopayList.value
+            }
+        ]
+    };
+
 }
 
 const getAppCardInfo = async (type, startDate, endDate) => {
