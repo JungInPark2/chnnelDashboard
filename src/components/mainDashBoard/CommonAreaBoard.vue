@@ -4,8 +4,8 @@ import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
 const mxMainList = reactive([
-   {api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '', yesterdayCnt : '' }
-  ,{api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '', yesterdayCnt : '' }
+   {api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '', yesterdayCnt : '' }
+  ,{api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '', yesterdayCnt : '' }
   ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드 로그인', cnt : '', yesterdayCnt:  '' }
 ])
 
