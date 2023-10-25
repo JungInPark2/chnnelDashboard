@@ -76,6 +76,7 @@ const search = async () => {
 	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, '*' + api.value + "*");
 	
 	try{
+		api.value = api.value == null ? '' : api.value;
 		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value,  '*' + api.value + "*");
 		loading.value = false;
 		isData.value = true;

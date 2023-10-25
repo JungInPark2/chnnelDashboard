@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeMount, ref, reactive } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
+import { utils } from '@/utils/utils';
 
 let documentStyle = getComputedStyle(document.documentElement);
 let textColor = documentStyle.getPropertyValue('--text-color');
@@ -219,12 +220,12 @@ const getAppCardInfo = async (type, startDate, endDate) => {
 onBeforeMount(() => {
   const now = new Date();
   const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
-  const endTimeToday = now.toISOString();
+  const endTimeToday = utils.toISOStringWithLocalOffset(now);
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 0, 0, 0, 0));
+  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
   const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
   setColorOptions();
@@ -232,7 +233,7 @@ onBeforeMount(() => {
     getTempInfo();
   }else{
     getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday);
-    getAppCardInfo('Y', new Date(srtTimeYesterday).toISOString(), new Date(endTimeYesterday).toISOString());
+    getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
   }
 })
 
