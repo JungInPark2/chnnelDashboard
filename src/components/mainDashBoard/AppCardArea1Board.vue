@@ -15,15 +15,16 @@ const oopayTypes = ref({});
 const oopayOptions = ref({});
 const oopayList = ref([]);
 const yesterDayoopayList = ref([]);
-const isInvalid = ref(false);
+const isPayInvalid = ref(false);
+const isAuthInvalid = ref(false);
 
 const authOrderList = reactive([
-   {api : '/api/appcard/auth/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/auth/ct/AUTCT010101.do', apiName : '공인인증', cnt : '0', yesterdayCnt : '0' }
-  ,{api : '/api/appcard/auth/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/auth/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/auth/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '0', yesterdayCnt:  '0' }
-  ,{api : '/api/appcard/auth/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '0', yesterdayCnt:  '0' }
+   {api : '/api/appcard/aut/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '0'}
+  ,{api : '/api/appcard/aut/ct/AUTCT010101.do', apiName : '공인인증', cnt : '0'}
+  ,{api : '/api/appcard/aut/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '0' }
+  ,{api : '/api/appcard/aut/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '0'}
+  ,{api : '/api/appcard/aut/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '0'}
+  ,{api : '/api/appcard/aut/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '0'}
 ])
 
 const oopayOrderList = reactive([
@@ -83,6 +84,9 @@ const setAuthChart = () => {
     authList.value.push(obj.cnt);
     authOrderNameList.push(obj.apiName);
   });
+
+  console.log('authList:' + authList.value);
+  console.log('authOrderNameList:' + authOrderNameList);
 
   authOptions.value = {
       plugins: {
@@ -152,6 +156,10 @@ const setOOPayChart = () => {
       oopayOrderNameList.push(obj.apiName);
     });
 
+    console.log('oopayList:' + oopayList.value);
+    console.log('yesterDayoopayList:' + yesterDayoopayList.value);
+    console.log('oopayOrderNameList:' + oopayOrderNameList);
+
     //['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이']
     oopayTypes.value = {
         labels: oopayOrderNameList,
@@ -175,25 +183,10 @@ const setOOPayChart = () => {
 
 const getAppCardInfo = async (type, startDate, endDate) => {
 
-  const apiList = [];
-  authOrderList.forEach(obj => {
-    apiList.push(obj.api);
-  });
-  oopayOrderList.forEach(obj => {
-    apiList.push(obj.api);
-  });
-  
   try{
-    const result = await searchMainDashBoardInfo(apiList, startDate, endDate);
+    const result = await searchMainDashBoardInfo(oopayOrderList, startDate, endDate);
     const buckets = result.aggregations.api_name.buckets;
 
-    for (let i = 0; i < authOrderList.length; i++) {
-      for (let j = 0; j < buckets.length; j++) {
-        if (buckets[j].key === authOrderList[i].api) {
-            authOrderList[i].cnt = buckets[j].doc_count;
-        }
-      }
-    }
     for (let i = 0; i < oopayOrderList.length; i++) {
       for (let j = 0; j < buckets.length; j++) {
         if (buckets[j].key === oopayOrderList[i].api) {
@@ -206,15 +199,36 @@ const getAppCardInfo = async (type, startDate, endDate) => {
       }
     }
 
-    // 차트가 안그려진다면 데이터 세팅하고 호출하는 방법 찾기 
-    setAuthChart();
     setOOPayChart();
-    isInvalid.value = false;
+    isPayInvalid.value = false;
   }catch(error){
-    isInvalid.value = true;
+    isPayInvalid.value = true;
     console.log(error);
   }
   
+}
+
+const getAuthInfo = async (startDate, endDate) => {
+ 
+  try{
+    const result = await searchMainDashBoardInfo(authOrderList, startDate, endDate);
+    const buckets = result.aggregations.api_name.buckets;
+
+    for (let i = 0; i < authOrderList.length; i++) {
+      for (let j = 0; j < buckets.length; j++) {
+        if (buckets[j].key === authOrderList[i].api) {
+            authOrderList[i].cnt = buckets[j].doc_count;
+        }
+      }
+    }
+
+    // 차트가 안그려진다면 데이터 세팅하고 호출하는 방법 찾기 
+    setAuthChart();
+    isAuthInvalid.value = false;
+  }catch(error){
+    isAuthInvalid.value = true;
+    console.log(error);
+  }
 }
 
 onBeforeMount(() => {
@@ -223,7 +237,6 @@ onBeforeMount(() => {
   const endTimeToday = utils.toISOStringWithLocalOffset(now);
 
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
   yesterday.setUTCDate(yesterday.getUTCDate() - 1);
   const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
   const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
@@ -232,6 +245,9 @@ onBeforeMount(() => {
   if(import.meta.env.MODE === 'L') {
     getTempInfo();
   }else{
+    // 앱카드 인증요청
+    getAuthInfo(new Date(srtTimeToday).toISOString(), endTimeToday);
+    // oopay등록 어제,오늘
     getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday);
     getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
   }
@@ -242,9 +258,9 @@ onBeforeMount(() => {
 <template>
   <div class="col-12 xl:col-6">
     <div class="card flex flex-column align-items-center">
-        <h5 class="text-left w-full">인증 요청</h5>
-        <Chart v-if="!isInvalid"  type="pie" :data="authTypes" :options="authOptions"></Chart>
-          <div v-if="isInvalid" class=" align-items-center justify-content-center  overflow-hidden">
+        <h5 class="text-left w-full">앱카드 인증 요청</h5>
+        <Chart v-if="!isAuthInvalid"  type="pie" :data="authTypes" :options="authOptions"></Chart>
+          <div v-if="isAuthInvalid" class=" align-items-center justify-content-center  overflow-hidden">
             <div class="flex flex-column align-items-center justify-content-center">
                 <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
                     <div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">
@@ -264,9 +280,9 @@ onBeforeMount(() => {
   </div>
   <div class="col-12 xl:col-6">
     <div class="card align-items-center">
-        <h5 class="text-left w-full">ooPay등록</h5>
-        <Chart v-if="!isInvalid" type="bar" :data="oopayTypes" :options="oopayOptions"></Chart>
-        <div v-if="isInvalid" class="align-items-center justify-content-center  overflow-hidden">
+        <h5 class="text-left w-full">ooPay 등록 요청</h5>
+        <Chart v-if="!isPayInvalid" type="bar" :data="oopayTypes" :options="oopayOptions"></Chart>
+        <div v-if="isPayInvalid" class="align-items-center justify-content-center  overflow-hidden">
           <div class="flex flex-column align-items-center justify-content-center">
               <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(233, 30, 99, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
                   <div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">

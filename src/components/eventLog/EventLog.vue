@@ -92,8 +92,8 @@ const search = async () => {
 				event.duration = event.value.hc ? event.value.hc.api.duration : '';
 				event.service = event.value.hc.service ? event.value.hc.service.name : '';
 				event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
-				event.request  = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
-				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+				event.request  = event.value.hc && event.value.hc.event ? event.value.hc.event.req.message.slice(1, -1) : '';
+				event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message.slice(1, -1) : '';
 			}
 			event.instance = event.value.agent ? event.value.agent.name : '';
 			event.ip = event.value.source ? event.value.source.ip : '';
