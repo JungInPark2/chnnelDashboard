@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, ref, reactive } from 'vue';
+import { onBeforeMount, ref, reactive, defineExpose } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
@@ -252,6 +252,12 @@ onBeforeMount(() => {
     getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
   }
 })
+
+defineExpose({
+  getTempInfo,
+  getAuthInfo,
+  getAppCardInfo
+});
 
 </script>
 
