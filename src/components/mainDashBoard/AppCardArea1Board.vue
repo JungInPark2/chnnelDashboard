@@ -77,6 +77,8 @@ const getTempInfo = () => {
 }
 
 const setAuthChart = () => {
+  console.log('setAuthChart');
+
   let authOrderNameList = [];
   let authList = [];
   authOrderList.forEach(obj => {
@@ -177,8 +179,16 @@ const setOOPayChart = () => {
 
 const getAppCardInfo = async (type, startDate, endDate) => {
 
+  console.log('getAppCardInfo');
+
   try{
-    const result = await searchMainDashBoardInfo(oopayOrderList, startDate, endDate);
+
+    let apinames = [];
+    oopayOrderList.forEach(obj => {
+      apinames.push(obj.api);
+    });
+
+    const result = await searchMainDashBoardInfo(apinames, startDate, endDate);
     const buckets = result.aggregations.api_name.buckets;
 
     for (let i = 0; i < oopayOrderList.length; i++) {
@@ -192,6 +202,7 @@ const getAppCardInfo = async (type, startDate, endDate) => {
         }
       }
     }
+    setOOPayChart();
     isPayInvalid.value = false;
   }catch(error){
     isPayInvalid.value = true;
@@ -201,9 +212,15 @@ const getAppCardInfo = async (type, startDate, endDate) => {
 }
 
 const getAuthInfo = async (startDate, endDate) => {
+
+  console.log('앱카드 인증 요청 API');
  
   try{
-    const result = await searchMainDashBoardInfo(authOrderList, startDate, endDate);
+    let apinames = [];
+    authOrderList.forEach(obj => {
+      apinames.push(obj.api);
+    });
+    const result = await searchMainDashBoardInfo(apinames, startDate, endDate);
     const buckets = result.aggregations.api_name.buckets;
 
     for (let i = 0; i < authOrderList.length; i++) {
@@ -214,8 +231,8 @@ const getAuthInfo = async (startDate, endDate) => {
       }
     }
 
-    // 차트가 안그려진다면 데이터 세팅하고 호출하는 방법 찾기 
     setAuthChart();
+
     isAuthInvalid.value = false;
   }catch(error){
     isAuthInvalid.value = true;
@@ -239,15 +256,11 @@ onBeforeMount(() => {
   }else{
     // 앱카드 인증요청
     getAuthInfo(new Date(srtTimeToday).toISOString(), endTimeToday);
+   
     // oopay등록 어제,오늘
-    getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday)
-      .then(() => {
-          getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
-      }).then(() => {
-        setOOPayChart();
-      }).catch((error) => {
-        console.error("Error:", error);
-      })
+    getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday);
+    getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
+    
   }
 })
 
