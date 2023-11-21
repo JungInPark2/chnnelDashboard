@@ -10,7 +10,6 @@ let surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
 const authTypes = ref({});
 const authOptions = ref({});
-const authList = ref([]);
 const oopayTypes = ref({});
 const oopayOptions = ref({});
 
