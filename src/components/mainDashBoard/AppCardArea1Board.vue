@@ -13,8 +13,7 @@ const authOptions = ref({});
 const authList = ref([]);
 const oopayTypes = ref({});
 const oopayOptions = ref({});
-const oopayList = ref([]);
-const yesterDayoopayList = ref([]);
+
 const isPayInvalid = ref(false);
 const isAuthInvalid = ref(false);
 
@@ -79,14 +78,12 @@ const getTempInfo = () => {
 }
 
 const setAuthChart = () => {
-  const authOrderNameList = [];
+  let authOrderNameList = [];
+  let authList = [];
   authOrderList.forEach(obj => {
-    authList.value.push(obj.cnt);
+    authList.push(obj.cnt);
     authOrderNameList.push(obj.apiName);
   });
-
-  console.log('authList:' + authList.value);
-  console.log('authOrderNameList:' + authOrderNameList);
 
   authOptions.value = {
       plugins: {
@@ -103,7 +100,7 @@ const setAuthChart = () => {
     labels: authOrderNameList,
     datasets: [
         {
-            data: authList.value,
+            data: authList,
             backgroundColor: [documentStyle.getPropertyValue('--cyan-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--primary-500'), documentStyle.getPropertyValue('--green-500'), 
             documentStyle.getPropertyValue('--pink-500'), documentStyle.getPropertyValue('--teal-500'), documentStyle.getPropertyValue('--yellow-500')],
             hoverBackgroundColor: [documentStyle.getPropertyValue('--cyan-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--primary-400'), documentStyle.getPropertyValue('--green-400'), 
@@ -149,16 +146,14 @@ const setOOPayChart = () => {
         }
     };
 
-    const oopayOrderNameList = [];
+    let oopayOrderNameList = [];
+    let yesterDayoopayList = [];
+    let oopayList = [];
     oopayOrderList.forEach(obj => {
-      oopayList.value.push(obj.cnt);
-      yesterDayoopayList.value.push(obj.yesterdayCnt);
+      oopayList.push(obj.cnt);
+      yesterDayoopayList.push(obj.yesterdayCnt);
       oopayOrderNameList.push(obj.apiName);
     });
-
-    console.log('oopayList:' + oopayList.value);
-    console.log('yesterDayoopayList:' + yesterDayoopayList.value);
-    console.log('oopayOrderNameList:' + oopayOrderNameList);
 
     //['Apple pay', '배민페이', 'carPay', '카카오페이', 'L.PAY', '네이버', '네이버인입', 'SSG', '스마일페이', '삼성페이', '토스페이', 'TV페이']
     oopayTypes.value = {
@@ -168,13 +163,13 @@ const setOOPayChart = () => {
                 label: '전일자',
                 backgroundColor: documentStyle.getPropertyValue('--pink-200'),
                 borderColor: documentStyle.getPropertyValue('--pink-200'),
-                data: yesterDayoopayList.value
+                data: yesterDayoopayList
             },
             {
                 label: '오늘',
                 backgroundColor: documentStyle.getPropertyValue('--pink-500'),
                 borderColor: documentStyle.getPropertyValue('--pink-500'),
-                data: oopayList.value
+                data: oopayList
             }
         ]
     };
@@ -198,8 +193,6 @@ const getAppCardInfo = async (type, startDate, endDate) => {
         }
       }
     }
-
-    setOOPayChart();
     isPayInvalid.value = false;
   }catch(error){
     isPayInvalid.value = true;
@@ -248,8 +241,14 @@ onBeforeMount(() => {
     // 앱카드 인증요청
     getAuthInfo(new Date(srtTimeToday).toISOString(), endTimeToday);
     // oopay등록 어제,오늘
-    getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday);
-    getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
+    getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday)
+      .then(() => {
+          getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
+      }).then(() => {
+        setOOPayChart();
+      }).catch((error) => {
+        console.error("Error:", error);
+      })
   }
 })
 

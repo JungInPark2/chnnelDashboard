@@ -4,9 +4,9 @@ import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
 const mxMainList = reactive([
-   {api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '', yesterdayCnt : '' }
-  ,{api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '', yesterdayCnt : '' }
-  ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드 로그인', cnt : '', yesterdayCnt:  '' }
+   {api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/web/gcm/pu/GCMPU020101.do', apiName : '웰컴 패키지', cnt : '0', yesterdayCnt : '0' }
+  ,{api : '/api/appcard/lgn/cm/LGNCM010101.do', apiName : '앱카드 로그인', cnt : '0', yesterdayCnt:  '0' }
 ])
 
 const isInvalid = ref(false);
@@ -26,7 +26,7 @@ const searchCommonAreaInfo = async (type, startDate, endDate) => {
         if (buckets[j].key === mxMainList[i].api) {
           if(type === 'T') {
             mxMainList[i].cnt = buckets[j].doc_count;
-          }else{
+          }else{  
             mxMainList[i].yesterdayCnt = buckets[j].doc_count;
           }
           
