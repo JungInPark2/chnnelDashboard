@@ -1,7 +1,12 @@
 <script setup>
-import { onBeforeMount, reactive, ref } from 'vue';
+import { onBeforeMount, reactive, ref, defineExpose } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
+
+const props = defineProps({
+  startTime: String,
+  remainingTime: String
+});
 
 const mxMainList = reactive([
    {api : '/api/lgn/cm/LGNCM010101.do', apiName : 'MX로그인', cnt : '0', yesterdayCnt : '0' }
@@ -77,6 +82,11 @@ onBeforeMount(() => {
     searchCommonAreaInfo('Y' , srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
   }
 })
+
+defineExpose({
+  searchTempCommonAreaInfo,
+  searchCommonAreaInfo
+});
 </script>
 
 <template>
@@ -109,4 +119,17 @@ onBeforeMount(() => {
             </div>
         </div>
     </div>
+
+    <div class="col-12 lg:col-6 xl:col-3">
+        <div class="card mb-0">
+            <div class="flex justify-content-between mb-3">
+                <div>
+                    <span class="block text-700 font-medium mb-3">기준시간</span>
+                    <div class="text-900 font-medium text-xl">{{ startTime }}</div>
+                </div>
+            </div>
+            <span v-if="!isInvalid" class="text-green-500 font-medium"> {{ remainingTime }} 후 조회</span>
+        </div>
+    </div>
+
 </template>

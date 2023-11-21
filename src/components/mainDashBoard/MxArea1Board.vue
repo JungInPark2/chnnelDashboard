@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, reactive, ref } from 'vue';
+import { onBeforeMount, reactive, ref, defineExpose } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
@@ -40,6 +40,7 @@ const getLtmCardLoan = async () => {
     const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
     try{
+        isErrorLtmCardLoan.value = false;
         const searchBfdtLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday.toISOString(), endTimeYesterday.toISOString())
         bfdtLtmCardLoan.value = searchBfdtLtmCardLoan;
 
@@ -61,6 +62,7 @@ const getLtmCardLoan = async () => {
     const endTimeToday = utils.toISOStringWithLocalOffset(now);
 
     try{
+        isErrorLtmCardLoan.value = false;
         const searchTodyLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday.toISOString(), endTimeToday);
         todyLtmCardLoan.value = searchTodyLtmCardLoan;
 
@@ -90,6 +92,7 @@ const getShtrCardLoan = async () => {
     const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
 
     try{
+        isErrorShtrCardLoan.value = false;
         const searchBfdtShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday.toISOString(), endTimeYesterday.toISOString())
         bfdtShtrCardLoan.value = searchBfdtShtrCardLoan;
 
@@ -111,6 +114,7 @@ const getShtrCardLoan = async () => {
     const endTimeToday = utils.toISOStringWithLocalOffset(now);
 
     try{
+        isErrorShtrCardLoan.value = false;
         const searchTodyShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday.toISOString(), endTimeToday);
         todyShtrCardLoan.value = searchTodyShtrCardLoan;
 
@@ -151,6 +155,11 @@ const getShtrCardLoanRto = (count) => {
     }
     return 0;
 };
+
+defineExpose({
+  getLtmCardLoan,
+  getShtrCardLoan
+});
 
 </script>
 
