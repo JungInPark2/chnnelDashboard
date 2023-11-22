@@ -25,7 +25,7 @@ if(import.meta.env.MODE === 'D' || import.meta.env.MODE === 'T'){
 }
 
 const serverType = ref(serverTypes.value[0]);
-const instanceValue = ref(instanceValues);
+const instanceValue = ref(null);
 const filters = ref(null);
 const startDate = ref(null);
 const endDate = ref(null);
@@ -45,7 +45,7 @@ onBeforeMount(() => {
 });
 
 const valid = () => {
-	if(!serverType.value.code || instanceValue.value.length == 0 || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
+	if(!serverType.value.code || !instanceValue.value || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
 		loading.value = false;
 		return false;
 	}
@@ -58,7 +58,9 @@ const search = async () => {
 	if(!valid()){
 		isInvalid.value = true;
 		return;
-	} 
+	}
+
+	isInvalid.value = false;
 	
 	const serverList = [];
 	if(serverType.value.code == 'ALL') {
@@ -146,7 +148,24 @@ const searchTempInfo = () => {
 						</div>
 						<div class="field col-12 md:col-4">
                 <span class="p-float-label">
-                    <MultiSelect id="multiselect" :options="instanceValues" v-model="instanceValue" optionLabel="name" :filter="false" :class="{ 'p-invalid': isInvalid && instanceValue.length == 0}" ></MultiSelect>
+                    <MultiSelect id="multiselect" :options="instanceValues" v-model="instanceValue" optionLabel="name" :filter="true" :class="{ 'p-invalid': isInvalid }" >
+											<template #value="slotProps">
+                        <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
+                            <span :class="'mr-2 flag flag-' + option.code.toLowerCase()" style="width: 18px; height: 12px" />
+                            <div>{{ option.name }}</div>
+                        </div>
+                        <template v-if="!slotProps.value || slotProps.value.length === 0">
+                            <div class="p-1">Select Countries</div>
+                        </template>
+                    </template>
+                    <template #option="slotProps">
+                        <div class="flex align-items-center">
+                            <span :class="'mr-2 flag flag-' + slotProps.option.code.toLowerCase()" style="width: 18px; height: 12px" />
+                            <div>{{ slotProps.option.name }}</div>
+                        </div>
+                    </template>
+										
+										</MultiSelect>
                     <label for="multiselect">instance</label>
                 </span>
             </div>
