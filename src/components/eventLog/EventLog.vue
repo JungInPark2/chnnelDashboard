@@ -75,6 +75,18 @@ const search = async () => {
     instanceList.push(obj.code);
   });
 
+	if (startDate.value) {
+        const tmpstartDate = new Date(startDate.value);
+        tmpstartDate.setHours(0, 0, 0, 0);
+        startDate.value = tmpstartDate;
+    }
+
+    if (endDate.value) {
+        const tmpendDate = new Date(endDate.value);
+        tmpendDate.setHours(23, 59, 59, 999);
+        endDate.value = tmpendDate;
+    }
+
 	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, '*' + api.value + "*");
 	
 	try{
