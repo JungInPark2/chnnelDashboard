@@ -8,7 +8,7 @@ const serverTypes = ref([
     { name: 'MX', code: 'mx' },
     { name: '앱카드', code: 'appcard' }
 ]);
-const instanceValues = ref([
+/* const instanceValues = ref([
 		{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
     ,{ name: 'mx21', code: 'mx21' }, { name: 'mx22', code: 'mx22' }, { name: 'mx23', code: 'mx23' }, { name: 'mx24', code: 'mx24' }, { name: 'mx25', code: 'mx25' }, { name: 'mx26', code: 'mx26' }
     ,{ name: 'mx31', code: 'mx31' }, { name: 'mx32', code: 'mx32' }, { name: 'mx33', code: 'mx33' }, { name: 'mx34', code: 'mx34' }, { name: 'mx35', code: 'mx35' }, { name: 'mx36', code: 'mx36' }
@@ -22,10 +22,10 @@ const instanceValues = ref([
 
 if(import.meta.env.MODE === 'D' || import.meta.env.MODE === 'T'){
 	instanceValues.value.push({name:'dtwbap13', code: 'dtwbap13'})
-}
+} */
 
 const serverType = ref(serverTypes.value[0]);
-const instanceValue = ref(null);
+//const instanceValue = ref(null);
 const filters = ref(null);
 const startDate = ref(null);
 const endDate = ref(null);
@@ -45,7 +45,7 @@ onBeforeMount(() => {
 });
 
 const valid = () => {
-	if(!serverType.value.code || !instanceValue.value || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
+	if(!serverType.value.code || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
 		loading.value = false;
 		return false;
 	}
@@ -70,10 +70,10 @@ const search = async () => {
 		serverList.push(serverType.value.code);
 	}
 
-	const instanceList = [];
+	/* const instanceList = [];
   instanceValue.value.forEach(obj => {
     instanceList.push(obj.code);
-  });
+  }); */
 
 	if (startDate.value) {
         const tmpstartDate = new Date(startDate.value);
@@ -158,7 +158,7 @@ const searchTempInfo = () => {
 								<label for="serverType">시스템구분</label>
 							</span>
 						</div>
-						<div class="field col-12 md:col-4">
+					<!--<div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <MultiSelect id="multiselect" :options="instanceValues" v-model="instanceValue" optionLabel="name" :filter="true" :class="{ 'p-invalid': isInvalid }" >
 											<template #value="slotProps">
@@ -180,7 +180,7 @@ const searchTempInfo = () => {
 										</MultiSelect>
                     <label for="multiselect">instance</label>
                 </span>
-            </div>
+            </div>	-->	
 					</div>
 					<div class="grid p-fluid">
 						<div class="col-12 md:col-3">

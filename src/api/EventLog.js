@@ -18,11 +18,6 @@ const searchEventLogInfo = async (serverList, instances, gteDttm, lteDttm, csno,
                             terms: {
                                 "hc.service.name": serverList
                             }
-                        },
-                        {
-                            terms: {
-                                "agent.name": instances
-                            }
                         }
                     ], must : [
                         {

@@ -186,12 +186,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-orange-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL010103.do'] + '%' }"></div>
                             </div>
-                            <span class="text-orange-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL010103.do'] }}</span>
+                            <span class="text-orange-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL010103.do']) }}</span>
                         </div> 
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL010103.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL010103.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -205,12 +205,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-cyan-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL020103.do'] + '%' }"></div>
                             </div>
-                            <span class="text-cyan-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL020103.do'] }}</span>
+                            <span class="text-cyan-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL020103.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL020103.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL020103.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -224,12 +224,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-yellow-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL020203.do'] + '%' }"></div>
                             </div>
-                            <span class="text-yellow-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL020203.do'] }}</span>
+                            <span class="text-yellow-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL020203.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL020203.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL020203.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -243,12 +243,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-green-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL020901.do'] + '%' }"></div>
                             </div>
-                            <span class="text-green-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL020901.do'] }}</span>
+                            <span class="text-green-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL020901.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL020901.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL020901.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -262,12 +262,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-purple-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL020401.do'] + '%' }"></div>
                             </div>
-                            <span class="text-purple-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL020401.do'] }}</span>
+                            <span class="text-purple-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL020401.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL020401.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL020401.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -281,12 +281,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-teal-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL020801.do'] + '%' }"></div>
                             </div>
-                            <span class="text-teal-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL020801.do'] }}</span>
+                            <span class="text-teal-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL020801.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL020801.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL020801.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -301,12 +301,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-pink-500 h-full" :style="{ width: todyLtmCardLoanRto['/web/fin/ll/FINLL020501.do'] + '%' }"></div>
                             </div>
-                            <span class="text-pink-500 ml-3 font-medium">{{ todyLtmCardLoanCount['/web/fin/ll/FINLL020501.do'] }}</span>
+                            <span class="text-pink-500 ml-3 font-medium">{{ utils.numberWithCommas(todyLtmCardLoanCount['/web/fin/ll/FINLL020501.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtLtmCardLoanCount['/web/fin/ll/FINLL020501.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtLtmCardLoanCount['/web/fin/ll/FINLL020501.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -338,12 +338,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-orange-500 h-full" :style="{ width: todyShtrCardLoanRto['/web/fin/sl/FINSL010101.do'] + '%' }"></div>
                             </div>
-                            <span class="text-orange-500 ml-3 font-medium">{{ todyShtrCardLoanCount['/web/fin/sl/FINSL010101.do'] }}</span>
+                            <span class="text-orange-500 ml-3 font-medium">{{ utils.numberWithCommas(todyShtrCardLoanCount['/web/fin/sl/FINSL010101.do'] )}}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtShtrCardLoanCount['/web/fin/sl/FINSL010101.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtShtrCardLoanCount['/web/fin/sl/FINSL010101.do'] )}}</span>
                         </div>
                     </div>
                 </li>
@@ -358,12 +358,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-cyan-500 h-full" :style="{ width: todyShtrCardLoanRto['/web/fin/sl/FINSL020101.do'] + '%' }"></div>
                             </div>
-                            <span class="text-cyan-500 ml-3 font-medium">{{ todyShtrCardLoanCount['/web/fin/sl/FINSL020101.do'] }}</span>
+                            <span class="text-cyan-500 ml-3 font-medium">{{ utils.numberWithCommas(todyShtrCardLoanCount['/web/fin/sl/FINSL020101.do'] )}}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtShtrCardLoanCount['/web/fin/sl/FINSL020101.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtShtrCardLoanCount['/web/fin/sl/FINSL020101.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -378,12 +378,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-yellow-500 h-full" :style="{ width: todyShtrCardLoanRto['/web/fin/sl/FINSL090101.do'] + '%' }"></div>
                             </div>
-                            <span class="text-yellow-500 ml-3 font-medium">{{ todyShtrCardLoanCount['/web/fin/sl/FINSL090101.do'] }}</span>
+                            <span class="text-yellow-500 ml-3 font-medium">{{ utils.numberWithCommas(todyShtrCardLoanCount['/web/fin/sl/FINSL090101.do'] )}}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtShtrCardLoanCount['/web/fin/sl/FINSL090101.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtShtrCardLoanCount['/web/fin/sl/FINSL090101.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -397,12 +397,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-green-500 h-full" :style="{ width: todyShtrCardLoanRto['/web/fin/sl/FINSL100102.do'] + '%' }"></div>
                             </div>
-                            <span class="text-green-500 ml-3 font-medium">{{ todyShtrCardLoanCount['/web/fin/sl/FINSL100102.do'] }}</span>
+                            <span class="text-green-500 ml-3 font-medium">{{ utils.numberWithCommas(todyShtrCardLoanCount['/web/fin/sl/FINSL100102.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtShtrCardLoanCount['/web/fin/sl/FINSL100102.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtShtrCardLoanCount['/web/fin/sl/FINSL100102.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -416,12 +416,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-teal-500 h-full" :style="{ width: todyShtrCardLoanRto['/web/fin/at/FINAT020101.do'] + '%' }"></div>
                             </div>
-                            <span class="text-teal-500 ml-3 font-medium">{{ todyShtrCardLoanCount['/web/fin/at/FINAT020101.do'] }}</span>
+                            <span class="text-teal-500 ml-3 font-medium">{{ utils.numberWithCommas(todyShtrCardLoanCount['/web/fin/at/FINAT020101.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtShtrCardLoanCount['/web/fin/at/FINAT020101.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtShtrCardLoanCount['/web/fin/at/FINAT020101.do']) }}</span>
                         </div>
                     </div>
                 </li>
@@ -436,12 +436,12 @@ defineExpose({
                             <div class="surface-300 border-round overflow-hidden w-full mr-5" style="height: 8px; box-sizing: border-box;">
                                 <div class="bg-pink-500 h-full" :style="{ width: todyShtrCardLoanRto['/web/fin/sl/FINSL040101.do'] + '%' }"></div>
                             </div>
-                            <span class="text-pink-500 ml-3 font-medium">{{ todyShtrCardLoanCount['/web/fin/sl/FINSL040101.do'] }}</span>
+                            <span class="text-pink-500 ml-3 font-medium">{{ utils.numberWithCommas(todyShtrCardLoanCount['/web/fin/sl/FINSL040101.do']) }}</span>
                         </div>
                         <div class="flex align-items-center w-full mb-2">
                             <div class="surface-300 border-round overflow-hidden w-full mr-5">
                             </div>
-                            <span class="text-gray-500 ml-3 font-medium">{{ bfdtShtrCardLoanCount['/web/fin/sl/FINSL040101.do'] }}</span>
+                            <span class="text-gray-500 ml-3 font-medium">{{ utils.numberWithCommas(bfdtShtrCardLoanCount['/web/fin/sl/FINSL040101.do']) }}</span>
                         </div>
                     </div>
                 </li>

@@ -95,11 +95,11 @@ defineExpose({
             <div class="flex justify-content-between mb-3">
                 <div>
                     <span class="block text-700 font-medium mb-3">{{ item.apiName }}</span>
-                    <div class="text-900 font-medium text-xl">{{ item.cnt }}</div>
+                    <div class="text-900 font-medium text-xl"> {{ utils.numberWithCommas(item.cnt)}}</div>
                 </div>
             </div>
             <span v-if="!isInvalid" class="text-green-500 font-medium">전일자  </span>
-            <span v-if="!isInvalid" class="text-500"> {{ item.yesterdayCnt }} </span>
+            <span v-if="!isInvalid" class="text-500"> {{ utils.numberWithCommas(item.yesterdayCnt) }} </span>
             <span v-if="!isInvalid" class="text-yellow-500"> ({{(((item.cnt - item.yesterdayCnt) / item.yesterdayCnt) * 100).toFixed(2)}}%)</span>
             <div v-if="isInvalid" class="surface-ground  align-items-center justify-content-center  overflow-hidden">
               <div class="flex flex-column align-items-center justify-content-center">
