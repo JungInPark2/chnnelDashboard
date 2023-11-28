@@ -132,14 +132,14 @@ const fetchData = async () => {
                                     </div>
                                     <div class="col-12 md:col-3">
                                         <span class="p-float-label">
-                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqrySrtDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
+                                            <Calendar :showIcon="true" :showButtonBar="true" id="calendar-24h" v-model="iqrySrtDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
                                             <label for="calendar-24h">조회 시작일</label>
                                         </span>
                                         <small class="p-error" id="text-error">{{ errorMessageIqrySrtDttm || '&nbsp;' }}</small>
                                     </div>
                                     <div class="col-12 md:col-3">
                                         <span class="p-float-label">
-                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqryEndDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
+                                            <Calendar :showIcon="true" :showButtonBar="true" id="calendar-24h" v-model="iqryEndDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
                                             <label for="calendar-24h">조회 종료일</label>
                                         </span>
                                         <small class="p-error" id="text-error">{{ errorMessageIqryEndDttm || '&nbsp;' }}</small>
