@@ -55,8 +55,8 @@ const validateIqryEndDttm = () => {
 };
 
 const validateInputs = () => {
-    if (xmpId.value || ipAddress.value || csno.value) return true;
-    return "전문ID, IP주소 또는 고객번호 중 하나 이상을 입력해주세요.";
+    if (ipAddress.value || csno.value) return true;
+    return "IP주소 또는 고객번호 중 하나 이상을 입력해주세요.";
 };
 
 const { errorMessage: errorMessageIqrySrtDttm } = useField('iqrySrtDttm', validateIqrySrtDttm);
@@ -74,18 +74,6 @@ const onSubmit = handleSubmit(() => {
 
 // API 호출 함수
 const fetchData = async () => {
-
-    if (iqrySrtDttm.value) {
-        const startDate = new Date(iqrySrtDttm.value);
-        startDate.setHours(0, 0, 0, 0);
-        iqrySrtDttm.value = startDate;
-    }
-
-    if (iqryEndDttm.value) {
-        const endDate = new Date(iqryEndDttm.value);
-        endDate.setHours(23, 59, 59, 999);
-        iqryEndDttm.value = endDate;
-    }
 
     loading.value = true;
 
@@ -144,14 +132,14 @@ const fetchData = async () => {
                                     </div>
                                     <div class="col-12 md:col-3">
                                         <span class="p-float-label">
-                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqrySrtDttm" hourFormat="24" dateFormat="yy.mm.dd" />
+                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqrySrtDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
                                             <label for="calendar-24h">조회 시작일</label>
                                         </span>
                                         <small class="p-error" id="text-error">{{ errorMessageIqrySrtDttm || '&nbsp;' }}</small>
                                     </div>
                                     <div class="col-12 md:col-3">
                                         <span class="p-float-label">
-                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqryEndDttm" hourFormat="24" dateFormat="yy.mm.dd" />
+                                            <Calendar :showIcon="true" id="calendar-24h" v-model="iqryEndDttm" showTime hourFormat="24" dateFormat="yy.mm.dd" />
                                             <label for="calendar-24h">조회 종료일</label>
                                         </span>
                                         <small class="p-error" id="text-error">{{ errorMessageIqryEndDttm || '&nbsp;' }}</small>
@@ -163,7 +151,6 @@ const fetchData = async () => {
                                             <label for="xmpId">전문ID</label>
                                             <i class="pi pi-search" />
                                         </span>
-                                        <small class="p-error">{{ errorMessageInputs || '&nbsp;' }}</small>
                                     </div>
                                 </div>
                                 <div class="grid p-fluid">
