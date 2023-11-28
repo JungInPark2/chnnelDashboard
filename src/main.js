@@ -20,11 +20,14 @@ import Column from 'primevue/column';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import MultiSelect from 'primevue/multiselect';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
 
 const app = createApp(App)
 app.use(PrimeVue, { ripple: true });
 app.use(createPinia())
 app.use(router)
+app.use(ToastService);
 
 app.component('Dropdown', Dropdown);
 app.component('InputText', InputText);
@@ -39,5 +42,6 @@ app.component('Column', Column);
 app.component('Accordion', Accordion);
 app.component('AccordionTab', AccordionTab);
 app.component('MultiSelect', MultiSelect);
+app.component('Toast', Toast);
 
 app.mount('#app')

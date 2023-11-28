@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 import { useField, useForm } from 'vee-validate';
 import { searchXmpLogInfo } from '@/api/XmpLog';
 
@@ -21,6 +22,7 @@ const ipAddress = ref('');
 const csno = ref('');
 const loading = ref(false);
 const errorMessage = ref(''); 
+const toast = useToast();
 
 const { handleSubmit } = useForm();
 
@@ -112,6 +114,17 @@ const fetchData = async () => {
             errorMessage.value = "데이터 조회 중 오류가 발생하였습니다.";
         }
 };
+
+// 복사 함수
+const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+        // 성공 메시지
+        toast.add({ severity: 'success', summary: '복사완료', detail: '전문로그가 복사되었습니다.', life: 3000 });
+    }).catch(err => {
+        // 오류 
+        toast.add({ severity: 'error', summary: '복사실패', detail: '전문로그가 복사되지 않았습니다.', life: 3000 });
+    });
+};
 </script>
 
 <template>
@@ -196,7 +209,13 @@ const fetchData = async () => {
                                 <Column field="ipAddress" header="IP주소" sortable style="width: 10%"></Column>
                                 <Column field="csno" header="고객번호" sortable style="width: 10%"></Column>
                                 <Column field="sarClsf" header="구분" sortable style="width: 10%"></Column>
-                                <Column field="xmpLog" header="전문로그" sortable style="width: 20%"></Column>
+                                <Column field="xmpLog" header="전문로그" sortable style="width: 20%">
+                                    <template #body="xmpData">
+                                        <Toast />
+                                        <Button icon="pi pi-clone" @click="copyToClipboard(xmpData.data.xmpLog)"></Button>
+                                        <span>{{ xmpData.data.xmpLog }}</span>
+                                    </template>
+                                </Column>
                             </DataTable>
                         </div>
                     </template>
