@@ -203,16 +203,17 @@ const copyToClipboard = (text) => {
                                     <div class="p-error centered-content" v-if="errorMessage">{{ errorMessage }}</div>
                                 </template>
 					            <template #loading> </template>
-                                <Column field="dttm" header="일시" sortable style="width: 20%"></Column>
+                                <Column field="dttm" header="일시" sortable style="width: 25%"></Column>
                                 <Column field="xmpId" header="전문ID" sortable style="width: 10%"></Column>
                                 <Column field="guid" header="GUID" sortable style="width: 20%"></Column>
                                 <Column field="ipAddress" header="IP주소" sortable style="width: 10%"></Column>
                                 <Column field="csno" header="고객번호" sortable style="width: 10%"></Column>
-                                <Column field="sarClsf" header="구분" sortable style="width: 10%"></Column>
+                                <Column field="sarClsf" header="구분" sortable style="width: 5%"></Column>
                                 <Column field="xmpLog" header="전문로그" sortable style="width: 20%">
                                     <template #body="xmpData">
                                         <Toast />
                                         <Button icon="pi pi-clone" @click="copyToClipboard(xmpData.data.xmpLog)"></Button>
+                                        <br>
                                         <span>{{ xmpData.data.xmpLog }}</span>
                                     </template>
                                 </Column>
