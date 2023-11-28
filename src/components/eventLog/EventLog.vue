@@ -77,21 +77,21 @@ const search = async () => {
 
 	if (startDate.value) {
         const tmpstartDate = new Date(startDate.value);
-        tmpstartDate.setHours(0, 0, 0, 0);
+        //tmpstartDate.setHours(0, 0, 0, 0);
         startDate.value = tmpstartDate;
     }
 
     if (endDate.value) {
         const tmpendDate = new Date(endDate.value);
-        tmpendDate.setHours(23, 59, 59, 999);
+        //tmpendDate.setHours(23, 59, 59, 999);
         endDate.value = tmpendDate;
     }
 
-	console.log('검색 조건:\n' + serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value, '*' + api.value + "*");
+	console.log('검색 조건:\n' + serverList, startDate.value , endDate.value, csno.value, ip.value, '*' + api.value + "*");
 	
 	try{
 		api.value = api.value == null ? '' : api.value;
-		const response = await searchEventLogInfo(serverList, instanceList, startDate.value , endDate.value, csno.value, ip.value,  '*' + api.value + "*");
+		const response = await searchEventLogInfo(serverList, startDate.value , endDate.value, csno.value, ip.value,  '*' + api.value + "*");
 		loading.value = false;
 		isData.value = true;
 
@@ -184,10 +184,10 @@ const searchTempInfo = () => {
 					</div>
 					<div class="grid p-fluid">
 						<div class="col-12 md:col-3">
-							<Calendar :showIcon="true" :showButtonBar="true" v-model="startDate" placeholder="조회 시작일" hourFormat="24" dateFormat="yy.mm.dd" :class="{ 'p-invalid': isInvalid && !startDate}"></Calendar>
+							<Calendar :showIcon="true" :showButtonBar="true" v-model="startDate" placeholder="조회 시작일" showTime hourFormat="24" dateFormat="yy.mm.dd" :class="{ 'p-invalid': isInvalid && !startDate}"></Calendar>
 						</div>
 						<div class="col-2 md:col-3">
-							<Calendar :showIcon="true" :showButtonBar="true" v-model="endDate" placeholder="조회 종료일" hourFormat="24" dateFormat="yy.mm.dd" :class="{ 'p-invalid': isInvalid && !endDate}"></Calendar>
+							<Calendar :showIcon="true" :showButtonBar="true" v-model="endDate" placeholder="조회 종료일" showTime hourFormat="24" dateFormat="yy.mm.dd" :class="{ 'p-invalid': isInvalid && !endDate}"></Calendar>
 						</div>
 					</div>
 					<div class="grid p-fluid">

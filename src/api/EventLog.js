@@ -1,6 +1,6 @@
 import http from "./http";
 
-const searchEventLogInfo = async (serverList, instances, gteDttm, lteDttm, csno, ip, api) => {
+const searchEventLogInfo = async (serverList, gteDttm, lteDttm, csno, ip, api) => {
     try {
 
         const queryObj = {
