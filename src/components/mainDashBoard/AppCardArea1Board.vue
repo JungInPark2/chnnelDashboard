@@ -17,11 +17,10 @@ const isPayInvalid = ref(false);
 const isAuthInvalid = ref(false);
 
 const authOrderList = reactive([
-   {api : '/api/appcard/aut/ar/AUTAR010201.do', apiName : 'ARS인증', cnt : '0'}
-  ,{api : '/api/appcard/aut/ct/AUTCT010101.do', apiName : '공인인증', cnt : '0'}
+   {api : '/api/appcard/aut/ar/AUTAR020201.do', apiName : 'ARS인증', cnt : '0'}
   ,{api : '/api/appcard/aut/fd/AUTFD010201.do', apiName : 'fido인증', cnt : '0' }
-  ,{api : '/api/appcard/aut/hc/AUTHC010101.do', apiName : '카드비밀번호인증', cnt : '0'}
-  ,{api : '/api/appcard/aut/mp/AUTMP010201.do', apiName : 'sms인증', cnt : '0'}
+  ,{api : '/api/appcard/aut/hc/AUTHC030101.do', apiName : '비밀번호+cvv+유효기간', cnt : '0'}
+  ,{api : '/api/appcard/aut/sm/AUTMP010201.do', apiName : 'sms인증', cnt : '0'}
   ,{api : '/api/appcard/aut/pp/AUTPP010101.do', apiName : '결제비밀번호인증', cnt : '0'}
 ])
 
