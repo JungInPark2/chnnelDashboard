@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, reactive, ref, defineExpose } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
@@ -34,14 +34,11 @@ const getLtmCardLoan = async () => {
     const apiNames = ['/web/fin/ll/FINLL010103.do','/web/fin/ll/FINLL020103.do','/web/fin/ll/FINLL020203.do','/web/fin/ll/FINLL020901.do','/web/fin/ll/FINLL020401.do','/web/fin/ll/FINLL020801.do','/web/fin/ll/FINLL020501.do'];
 
     // 전일자 시간 구하기
-    const yesterday = new Date();
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
-    const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
+    const { srtTimeYesterday, endTimeYesterday } = utils.getYesterdayTimes();
 
     try{
         isErrorLtmCardLoan.value = false;
-        const searchBfdtLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday.toISOString(), endTimeYesterday.toISOString())
+        const searchBfdtLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday, endTimeYesterday)
         bfdtLtmCardLoan.value = searchBfdtLtmCardLoan;
 
         apiNames.forEach(apiName => {
@@ -57,13 +54,11 @@ const getLtmCardLoan = async () => {
     }
 
     // 오늘자 시간 구하기
-    const now = new Date();
-    const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const endTimeToday = utils.toISOStringWithLocalOffset(now);
+    const { srtTimeToday, endTimeToday } = utils.getTodayTimes();
 
     try{
         isErrorLtmCardLoan.value = false;
-        const searchTodyLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday.toISOString(), endTimeToday);
+        const searchTodyLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday, endTimeToday);
         todyLtmCardLoan.value = searchTodyLtmCardLoan;
 
         apiNames.forEach(apiName => {
@@ -86,14 +81,11 @@ const getShtrCardLoan = async () => {
     const apiNames = ['/web/fin/sl/FINSL010101.do','/web/fin/sl/FINSL020101.do','/web/fin/sl/FINSL090101.do','/web/fin/sl/FINSL100102.do','/web/fin/at/FINAT020101.do','/web/fin/sl/FINSL040101.do'];
 
     // 전일자 시간 구하기
-    const yesterday = new Date();
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
-    const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
+    const { srtTimeYesterday, endTimeYesterday } = utils.getYesterdayTimes();
 
     try{
         isErrorShtrCardLoan.value = false;
-        const searchBfdtShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday.toISOString(), endTimeYesterday.toISOString())
+        const searchBfdtShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeYesterday, endTimeYesterday)
         bfdtShtrCardLoan.value = searchBfdtShtrCardLoan;
 
         apiNames.forEach(apiName => {
@@ -109,13 +101,11 @@ const getShtrCardLoan = async () => {
     }
 
     // 오늘자 시간 구하기
-    const now = new Date();
-    const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const endTimeToday = utils.toISOStringWithLocalOffset(now);
+    const { srtTimeToday, endTimeToday } = utils.getTodayTimes();
 
     try{
         isErrorShtrCardLoan.value = false;
-        const searchTodyShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday.toISOString(), endTimeToday);
+        const searchTodyShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday, endTimeToday);
         todyShtrCardLoan.value = searchTodyShtrCardLoan;
 
         apiNames.forEach(apiName => {

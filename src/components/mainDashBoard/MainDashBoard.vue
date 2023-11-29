@@ -42,12 +42,15 @@ const updateRemainingTime = () => {
   }else{
     startTime.value = getFormattedDate(); // 기준시간 업데이트
 
+    const { srtTimeYesterday, endTimeYesterday } = utils.getYesterdayTimes();
+    const { srtTimeToday, endTimeToday } = utils.getTodayTimes();
+
     if(commonAreaBoardRef.value){
       if(import.meta.env.MODE === 'L') {
         commonAreaBoardRef.value.searchTempCommonAreaInfo();
       }else{
-        commonAreaBoardRef.value.searchCommonAreaInfo('T' , getSrtTimeToday(), getEndTimeToday());
-        commonAreaBoardRef.value.searchCommonAreaInfo('Y' , getSrtTimeYesterday(), getEndTimeYesterday());
+        commonAreaBoardRef.value.searchCommonAreaInfo('T' , srtTimeToday, endTimeToday);
+        commonAreaBoardRef.value.searchCommonAreaInfo('Y' , srtTimeYesterday, endTimeYesterday);
       }
     }
 
@@ -61,10 +64,10 @@ const updateRemainingTime = () => {
         appCardArea1BoardRef.value.getTempInfo();
       }else{
         // 앱카드 인증요청
-        appCardArea1BoardRef.value.getAuthInfo( getSrtTimeToday(), getEndTimeToday());
+        appCardArea1BoardRef.value.getAuthInfo( srtTimeToday, endTimeToday);
         // oopay등록 어제,오늘
-        appCardArea1BoardRef.value.getAppCardInfo('T',  getSrtTimeToday(), getEndTimeToday());
-        appCardArea1BoardRef.value.getAppCardInfo('Y', getSrtTimeYesterday(), getEndTimeYesterday());
+        appCardArea1BoardRef.value.getAppCardInfo('T',  srtTimeToday, endTimeToday);
+        appCardArea1BoardRef.value.getAppCardInfo('Y', srtTimeYesterday, endTimeYesterday);
       }
     }
 
@@ -79,34 +82,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearInterval(timer);
 });
-
-
-
-const getSrtTimeToday = () => {
-  const now = new Date();
-  const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  return srtTimeToday.toISOString();
-};
-
-const getEndTimeToday = () => {
-  const now = new Date();
-  const endTimeToday = utils.toISOStringWithLocalOffset(now);
-  return endTimeToday;
-};
-
-const getSrtTimeYesterday = () => {
-  const yesterday = new Date();
-  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
-  return srtTimeYesterday.toISOString();
-};
-
-const getEndTimeYesterday = () => {
-  const yesterday = new Date();
-  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
-  return endTimeYesterday.toISOString();
-};
 
 </script>
 

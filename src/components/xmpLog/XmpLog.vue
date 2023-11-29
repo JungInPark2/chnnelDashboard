@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { useField, useForm } from 'vee-validate';
 import { searchXmpLogInfo } from '@/api/XmpLog';
+import { utils } from '@/utils/utils';
 
 // API 호출 결과를 저장할 변수
 const apiResponse = ref([]);
@@ -81,7 +82,7 @@ const fetchData = async () => {
 
     // API 호출
     try{
-        const response = await searchXmpLogInfo(dropdownValue.value.code,iqrySrtDttm.value,iqryEndDttm.value,xmpId.value,ipAddress.value,csno.value);
+        const response = await searchXmpLogInfo(dropdownValue.value.code,utils.formatIqrySrtDttm(iqrySrtDttm.value),utils.formatIqryEndDttm(iqryEndDttm.value),xmpId.value,ipAddress.value,csno.value);
 
         apiResponse.value = response;
         loading.value = false;

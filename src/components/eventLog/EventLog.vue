@@ -2,6 +2,8 @@
 import { ref, onBeforeMount } from 'vue';
 import { searchEventLogInfo } from '@/api/eventLog';
 import JsonViewer from 'vue-json-viewer';
+import { utils } from '@/utils/utils';
+
 
 const serverTypes = ref([
 		{ name: '전체', code: 'ALL' },
@@ -75,6 +77,7 @@ const search = async () => {
     instanceList.push(obj.code);
   }); */
 
+  /*
 	if (startDate.value) {
         const tmpstartDate = new Date(startDate.value);
         //tmpstartDate.setHours(0, 0, 0, 0);
@@ -86,12 +89,13 @@ const search = async () => {
         //tmpendDate.setHours(23, 59, 59, 999);
         endDate.value = tmpendDate;
     }
+	*/
 
-	console.log('검색 조건:\n' + serverList, startDate.value , endDate.value, csno.value, ip.value, '*' + api.value + "*");
+	console.log('검색 조건:\n' + serverList, utils.formatIqrySrtDttm(startDate.value) , utils.formatIqryEndDttm(endDate.value), csno.value, ip.value, '*' + api.value + "*");
 	
 	try{
 		api.value = api.value == null ? '' : api.value;
-		const response = await searchEventLogInfo(serverList, startDate.value , endDate.value, csno.value, ip.value,  '*' + api.value + "*");
+		const response = await searchEventLogInfo(serverList, utils.formatIqrySrtDttm(startDate.value) , utils.formatIqryEndDttm(endDate.value), csno.value, ip.value,  '*' + api.value + "*");
 		loading.value = false;
 		isData.value = true;
 
