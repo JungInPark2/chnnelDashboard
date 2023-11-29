@@ -108,11 +108,11 @@ const search = async () => {
 				event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
 
 				try {
-						event.request =  event.value.hc && event.value.hc.event ? JSON.parse(event.value.hc.event.req.message) : '';
-						event.response = event.value.hc && event.value.hc.event ? JSON.parse(event.value.hc.event.res.message) : '';
+						event.request =  event.value.hc && event.value.hc.event && event.value.hc.event.req ? JSON.parse(event.value.hc.event.req.message) : '';
+						event.response = event.value.hc && event.value.hc.event && event.value.hc.event.res ? JSON.parse(event.value.hc.event.res.message) : '';
 					} catch (error) {
-						event.request =  event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
-						event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
+						event.request =  event.value.hc && event.value.hc.event && event.value.hc.event.req ? event.value.hc.event.req.message : '';
+						event.response = event.value.hc && event.value.hc.event && event.value.hc.event.res ? event.value.hc.event.res.message : '';
 					}
 			}
 			event.instance = event.value.agent ? event.value.agent.name : '';
