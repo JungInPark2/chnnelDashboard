@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, reactive, ref, defineExpose } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
@@ -66,20 +66,16 @@ const searchTempCommonAreaInfo = () => {
 }
 
 onBeforeMount(() => {
-  const now = new Date();
-  const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const endTimeToday = utils.toISOStringWithLocalOffset(now);
-
-  const yesterday = new Date();
-  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
-  const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
+  // 오늘일시
+  const { srtTimeToday, endTimeToday } = utils.getTodayTimes();
+  // 전일시
+  const { srtTimeYesterday, endTimeYesterday } = utils.getYesterdayTimes();
 
   if(import.meta.env.MODE === 'L') {
     searchTempCommonAreaInfo();
   }else{
-    searchCommonAreaInfo('T' , srtTimeToday.toISOString(), endTimeToday);
-    searchCommonAreaInfo('Y' , srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
+    searchCommonAreaInfo('T' , srtTimeToday, endTimeToday);
+    searchCommonAreaInfo('Y' , srtTimeYesterday, endTimeYesterday);
   }
 })
 

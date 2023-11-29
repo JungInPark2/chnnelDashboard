@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, ref, reactive, defineExpose } from 'vue';
+import { onBeforeMount, ref, reactive } from 'vue';
 import { searchMainDashBoardInfo } from '@/api/MainDashBoard';
 import { utils } from '@/utils/utils';
 
@@ -241,25 +241,21 @@ const getAuthInfo = async (startDate, endDate) => {
 }
 
 onBeforeMount(() => {
-  const now = new Date();
-  const srtTimeToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
-  const endTimeToday = utils.toISOStringWithLocalOffset(now);
-
-  const yesterday = new Date();
-  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  const srtTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate()));
-  const endTimeYesterday = new Date(Date.UTC(yesterday.getUTCFullYear(), yesterday.getUTCMonth(), yesterday.getUTCDate(), 23, 59, 59, 999));
+  // 오늘일시
+  const { srtTimeToday, endTimeToday } = utils.getTodayTimes();
+  // 전일시
+  const { srtTimeYesterday, endTimeYesterday } = utils.getYesterdayTimes();
 
   setColorOptions();
   if(import.meta.env.MODE === 'L') {
     getTempInfo();
   }else{
     // 앱카드 인증요청
-    getAuthInfo(new Date(srtTimeToday).toISOString(), endTimeToday);
+    getAuthInfo(srtTimeToday, endTimeToday);
    
     // oopay등록 어제,오늘
-    getAppCardInfo('T', new Date(srtTimeToday).toISOString(), endTimeToday);
-    getAppCardInfo('Y', srtTimeYesterday.toISOString(), endTimeYesterday.toISOString());
+    getAppCardInfo('T', srtTimeToday, endTimeToday);
+    getAppCardInfo('Y', srtTimeYesterday, endTimeYesterday);
     
   }
 })
