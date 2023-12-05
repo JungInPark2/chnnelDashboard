@@ -8,7 +8,8 @@ import { utils } from '@/utils/utils';
 const serverTypes = ref([
 		{ name: '전체', code: 'ALL' },
     { name: 'MX', code: 'mx' },
-    { name: '앱카드', code: 'appcard' }
+    { name: '앱카드', code: 'appcard' },
+	{ name: '개인홈페이지', code: 'homepage' }
 ]);
 /* const instanceValues = ref([
 		{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
@@ -68,6 +69,7 @@ const search = async () => {
 	if(serverType.value.code == 'ALL') {
 		serverList.push('mx');
 		serverList.push('appcard');
+		serverList.push('homepage');
 	}else{
 		serverList.push(serverType.value.code);
 	}

@@ -12,7 +12,8 @@ const iqryCn = ref();
 // 입력 필드
 const dropdownValues = ref([
     { name: 'MX', code: 'mx' },
-    { name: '앱카드', code: 'appcard' }
+    { name: '앱카드', code: 'appcard' },
+    { name: '개인홈페이지', code: 'homepage' }
 ]);
 
 const dropdownValue = ref(dropdownValues.value[0]); 
