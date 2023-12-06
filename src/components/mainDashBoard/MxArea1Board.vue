@@ -9,6 +9,7 @@ const bfdtLtmCardLoanCount = reactive({});
 const todyLtmCardLoan = ref({});
 const todyLtmCardLoanCount = reactive({});
 const todyLtmCardLoanRto = reactive({});
+let todyLtmCardLoanTotalCount = 0;
 
 // 단기카드대출
 const bfdtShtrCardLoan = ref({});
@@ -16,6 +17,7 @@ const bfdtShtrCardLoanCount = reactive({});
 const todyShtrCardLoan = ref({});
 const todyShtrCardLoanCount = reactive({});
 const todyShtrCardLoanRto = reactive({});
+let todyShtrCardLoanTotalCount = 0;
 
 // 오류처리 변수
 const isErrorLtmCardLoan = ref(false);
@@ -61,10 +63,17 @@ const getLtmCardLoan = async () => {
         const searchTodyLtmCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday, endTimeToday);
         todyLtmCardLoan.value = searchTodyLtmCardLoan;
 
+        // 오늘자 단계별 count 및 total count 값을 구함
         apiNames.forEach(apiName => {
             todyLtmCardLoanCount[apiName] = getDocCount(searchTodyLtmCardLoan, apiName);
-            todyLtmCardLoanRto[apiName] = getLtmCardLoanRto(todyLtmCardLoanCount[apiName]);
+            todyLtmCardLoanTotalCount = todyLtmCardLoanTotalCount + todyLtmCardLoanCount[apiName];
         });
+
+        // 단계별 %을 구함
+        apiNames.forEach(apiName => {
+            todyLtmCardLoanRto[apiName] = getLtmCardLoanRto(todyLtmCardLoanCount[apiName], todyLtmCardLoanTotalCount);
+        });
+
     }catch(error){
         isErrorLtmCardLoan.value = true;
         if (error.message) {
@@ -108,10 +117,17 @@ const getShtrCardLoan = async () => {
         const searchTodyShtrCardLoan = await searchMainDashBoardInfo(apiNames, srtTimeToday, endTimeToday);
         todyShtrCardLoan.value = searchTodyShtrCardLoan;
 
+        // 오늘자 단계별 count 및 total count 값을 구함
         apiNames.forEach(apiName => {
             todyShtrCardLoanCount[apiName] = getDocCount(searchTodyShtrCardLoan, apiName);
-            todyShtrCardLoanRto[apiName] = getShtrCardLoanRto(todyShtrCardLoanCount[apiName]);
+            todyShtrCardLoanTotalCount = todyShtrCardLoanTotalCount + todyShtrCardLoanCount[apiName];
         });
+
+        // 단계별 %을 구함
+        apiNames.forEach(apiName => {
+            todyShtrCardLoanRto[apiName] = getShtrCardLoanRto(todyShtrCardLoanCount[apiName], todyShtrCardLoanTotalCount);
+        });
+
     }catch(error){
         isErrorShtrCardLoan.value = true;
         if (error.message) {
@@ -132,16 +148,16 @@ const getDocCount = (data, targetKey) => {
     return 0;
 }
 
-const getLtmCardLoanRto = (count) => {
-    if (todyLtmCardLoan.value && todyLtmCardLoan.value.hits && todyLtmCardLoan.value.hits.total.value > 0) {
-        return (count / todyLtmCardLoan.value.hits.total.value) * 100;
+const getLtmCardLoanRto = (count, todyLtmCardLoanTotalCount) => {
+    if (todyLtmCardLoanTotalCount > 0) {
+        return (count / todyLtmCardLoanTotalCount) * 100;
     }
     return 0;
 };
 
-const getShtrCardLoanRto = (count) => {
-    if (todyShtrCardLoan.value && todyShtrCardLoan.value.hits && todyShtrCardLoan.value.hits.total.value > 0) {
-        return (count / todyShtrCardLoan.value.hits.total.value) * 100;
+const getShtrCardLoanRto = (count, todyShtrCardLoanTotalCount) => {
+    if (todyShtrCardLoanTotalCount > 0) {
+        return (count / todyShtrCardLoanTotalCount) * 100;
     }
     return 0;
 };
