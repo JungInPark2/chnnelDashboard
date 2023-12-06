@@ -69,8 +69,8 @@ const search = async () => {
 
 		eventList.value = response.hits.hits;
 		eventList.value.forEach((event) => {
-			event.value = event._source;	
-			if(event.value.hc){
+		event.value = event._source;	
+		if(event.value.hc){
 				event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
 				event.csno = event.value.hc ? event.value.hc.csno : '';
 				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
@@ -271,7 +271,7 @@ const searchTempInfo = () => {
 							<Accordion >
 								<AccordionTab header="보기">
 										<p class="line-height-3 m-0">
-											<json-viewer :value="data.request" copyable></json-viewer>
+											<json-viewer :value="[data.request]" copyable></json-viewer>
 										</p>
 								</AccordionTab>
 						</Accordion>
@@ -282,7 +282,7 @@ const searchTempInfo = () => {
 							<Accordion >
 								<AccordionTab header="보기">
 										<p class="line-height-3 m-0">
-											<json-viewer :value="data.response" copyable></json-viewer>
+											<json-viewer :value="[data.response]" copyable></json-viewer>
 										</p>
 								</AccordionTab>
 						</Accordion>
