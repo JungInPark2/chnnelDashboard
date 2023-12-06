@@ -9,26 +9,10 @@ const serverTypes = ref([
 		{ name: '전체', code: 'ALL' },
     { name: 'MX', code: 'mx' },
     { name: '앱카드', code: 'appcard' },
-	{ name: '개인홈페이지', code: 'homepage' }
+		{ name: '개인홈페이지', code: 'homepage' }
 ]);
-/* const instanceValues = ref([
-		{ name: 'mx11', code: 'mx11' }, { name: 'mx12', code: 'mx12' }, { name: 'mx13', code: 'mx13' }, { name: 'mx14', code: 'mx14' }, { name: 'mx15', code: 'mx15' }, { name: 'mx16', code: 'mx16' }
-    ,{ name: 'mx21', code: 'mx21' }, { name: 'mx22', code: 'mx22' }, { name: 'mx23', code: 'mx23' }, { name: 'mx24', code: 'mx24' }, { name: 'mx25', code: 'mx25' }, { name: 'mx26', code: 'mx26' }
-    ,{ name: 'mx31', code: 'mx31' }, { name: 'mx32', code: 'mx32' }, { name: 'mx33', code: 'mx33' }, { name: 'mx34', code: 'mx34' }, { name: 'mx35', code: 'mx35' }, { name: 'mx36', code: 'mx36' }
-    ,{ name: 'mx41', code: 'mx41' }, { name: 'mx42', code: 'mx42' }, { name: 'mx43', code: 'mx43' }, { name: 'mx44', code: 'mx44' }, { name: 'mx45', code: 'mx45' }, { name: 'mx46', code: 'mx46' }
-    ,{ name: 'mx51', code: 'mx51' }, { name: 'mx52', code: 'mx52' }, { name: 'mx53', code: 'mx53' }, { name: 'mx54', code: 'mx54' }, { name: 'mx55', code: 'mx55' }, { name: 'mx56', code: 'mx56' }
-    ,{ name: 'mx61', code: 'mx61' }, { name: 'mx62', code: 'mx62' }, { name: 'mx63', code: 'mx63' }, { name: 'mx64', code: 'mx64' }, { name: 'mx65', code: 'mx65' }, { name: 'mx66', code: 'mx66' }
-		,{ name: 'L_appcd51', code: 'L_appcd51' }, { name: 'L_appcd52', code: 'L_appcd52' }, { name: 'L_appcd53', code: 'L_appcd53' }, { name: 'L_appcd54', code: 'L_appcd54' }, { name: 'L_appcd55', code: 'L_appcd55' }
-		,{ name: 'L_appcd56', code: 'L_appcd56' }, { name: 'L_appcd57', code: 'L_appcd57' }, { name: 'L_appcd58', code: 'L_appcd58' }, { name: 'L_appcd59', code: 'L_appcd59' }
-		,{ name: 'L_appcd61', code: 'L_appcd61' }, { name: 'L_appcd62', code: 'L_appcd62' }, { name: 'L_appcd63', code: 'L_appcd63' }, { name: 'L_appcd64', code: 'L_appcd64' }, { name: 'L_appcd65', code: 'L_appcd65' }
-]);
-
-if(import.meta.env.MODE === 'D' || import.meta.env.MODE === 'T'){
-	instanceValues.value.push({name:'dtwbap13', code: 'dtwbap13'})
-} */
 
 const serverType = ref(serverTypes.value[0]);
-//const instanceValue = ref(null);
 const filters = ref(null);
 const startDate = ref(null);
 const endDate = ref(null);
@@ -74,25 +58,6 @@ const search = async () => {
 		serverList.push(serverType.value.code);
 	}
 
-	/* const instanceList = [];
-  instanceValue.value.forEach(obj => {
-    instanceList.push(obj.code);
-  }); */
-
-  /*
-	if (startDate.value) {
-        const tmpstartDate = new Date(startDate.value);
-        //tmpstartDate.setHours(0, 0, 0, 0);
-        startDate.value = tmpstartDate;
-    }
-
-    if (endDate.value) {
-        const tmpendDate = new Date(endDate.value);
-        //tmpendDate.setHours(23, 59, 59, 999);
-        endDate.value = tmpendDate;
-    }
-	*/
-
 	console.log('검색 조건:\n' + serverList, utils.formatIqrySrtDttm(startDate.value) , utils.formatIqryEndDttm(endDate.value), csno.value, ip.value, '*' + api.value + "*");
 	
 	try{
@@ -100,6 +65,7 @@ const search = async () => {
 		const response = await searchEventLogInfo(serverList, utils.formatIqrySrtDttm(startDate.value) , utils.formatIqryEndDttm(endDate.value), csno.value, ip.value,  '*' + api.value + "*");
 		loading.value = false;
 		isData.value = true;
+		eventList.value = [];
 
 		eventList.value = response.hits.hits;
 		eventList.value.forEach((event) => {
@@ -126,7 +92,7 @@ const search = async () => {
 		});  
 
 	}catch (error) {
-		//eventList.value = [];
+		eventList.value = [];
     isData.value = false;
 		errorMessage.value = error.message;
   }
