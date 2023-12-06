@@ -1,2 +1,1 @@
 VITE_APP_API_URL=https://ditim.hyundaicard.com:9200/
-VITE_APP_API_KEY=LURjWlFZc0J1Mlh1RlBjdG5BTXo6T0pIUndwbGlTSEt4THJjWHdvTUtHQQ==

@@ -76,7 +76,14 @@ const formatIqryEndDttm = (date) => {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${offsetSign}${offsetHours}${offsetMinutes}`;
 };
 
+let apiKey = null;
+const setApiKey = (apiKeyValue) => {
+  apiKey = apiKeyValue;
+};
 
+const getApiKey = () => {
+  return apiKey;
+}
 
   const utils = {
       numberWithCommas
@@ -84,6 +91,8 @@ const formatIqryEndDttm = (date) => {
     , getTodayTimes
     , formatIqrySrtDttm
     , formatIqryEndDttm
+    , setApiKey
+    , getApiKey
   };
   
   export { utils };
