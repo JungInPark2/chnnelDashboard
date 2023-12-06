@@ -192,7 +192,7 @@ const searchTempInfo = () => {
 					:value="eventList"
 					:paginator="true"
 					class="p-datatable-gridlines"
-					:rows="20"
+					:rows="10"
 					dataKey="id"
 					:rowHover="true"
 					v-model:filters="filters"
@@ -248,31 +248,22 @@ const searchTempInfo = () => {
 							{{ data.resltcd }}
 						</template>
 					</Column>
-					<Column field="request" header="request" >
+					<Column field="request" header="request" style="width: 100;">
 						<template #body="{ data }">
-							<Accordion >
-								<AccordionTab header="보기">
-										<p class="line-height-3 m-0">
-											<Toast />
-											<Button icon="pi pi-clone" @click="copyToClipboard(data.request)"></Button>
-											{{ data.request }}
-											<!-- <json-viewer :value="data.request" copyable></json-viewer> -->
-										</p>
-								</AccordionTab>
-						</Accordion>
+							<p class="line-height-3 m-0 p-3 white-space-nowrap overflow-hidden text-overflow-clip" style="width:500px">
+								<Toast />
+								<Button icon="pi pi-clone" @click="copyToClipboard(data.request)"></Button>
+								<span >{{ data.request }}</span>
+							</p>
 						</template>
 					</Column>
 					<Column field="response" header="response" >
 						<template #body="{ data }">
-							<Accordion >
-								<AccordionTab header="보기">
-										<p class="line-height-3 m-0">
-											<Toast />
-											<Button icon="pi pi-clone" @click="copyToClipboard(data.response)"></Button>
-											{{ data.response }}
-										</p>
-								</AccordionTab>
-						</Accordion>
+							<p class="line-height-3 m-0 p-3 white-space-nowrap overflow-hidden text-overflow-clip" style="width:500px">
+									<Toast />
+									<Button icon="pi pi-clone" @click="copyToClipboard(data.response)"></Button>
+									<span style="width: 100;">{{ data.response }}</span>
+								</p>
 						</template>
 					</Column>
 				</DataTable>
