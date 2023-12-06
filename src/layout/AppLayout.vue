@@ -1,12 +1,18 @@
 <script setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, onBeforeMount} from 'vue';
 import AppTopbar from '@/layout/AppTopbar.vue';
 import AppSidebar from '@/layout/AppSiderbar.vue';
 import { useLayout } from '@/layout/composables/layout';
+import { utils } from '@/utils/utils';
 
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
 const outsideClickListener = ref(null);
+const isAuth = ref(false);
+
+onBeforeMount(() => {
+    if(utils.getApiKey()) isAuth.value = true;
+});
 
 watch(isSidebarActive, (newVal) => {
     if (newVal) {
@@ -59,7 +65,7 @@ const isOutsideClicked = (event) => {
 <template>
     <div class="layout-wrapper" :class="containerClass">
         <app-topbar></app-topbar>
-        <div class="layout-sidebar">
+        <div class="layout-sidebar" v-if="isAuth" >
             <app-sidebar></app-sidebar>
         </div>
         <div class="layout-main-container">

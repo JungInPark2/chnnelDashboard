@@ -1,6 +1,7 @@
 <script setup>
- import { onMounted, ref } from 'vue';
+ import { onMounted } from 'vue';
  import { utils } from '@/utils/utils';
+ import router from './router'
 
  onMounted(() => {
    const queryString = window.location.search;
@@ -10,6 +11,8 @@
    if (apiKeyValue) {
      utils.setApiKey(apiKeyValue);
      window.history.replaceState({}, document.title, '/channel/#/');
+   }else{
+     router.push('/error')
    }
 
  });
