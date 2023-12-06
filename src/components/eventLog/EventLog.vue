@@ -193,8 +193,8 @@ const searchTempInfo = () => {
 						</div>
 						<div class="col-12 md:col-3">
 							<span class="p-input-icon-left p-input-icon-right">
-									<i class="pi pi-search" />
 									<InputText type="text" placeholder="API명" v-model="api" />
+									<i class="pi pi-search" />
 							</span>
 						</div>
 						<div class="col-12 md:col-3">
