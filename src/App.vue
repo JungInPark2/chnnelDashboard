@@ -10,7 +10,7 @@
 
    if (apiKeyValue) {
      utils.setApiKey(apiKeyValue);
-     window.history.replaceState({}, document.title, '/channel/#/');
+     window.history.replaceState({}, document.title, '/channel/index.html#/');
    }else{
      router.push('/error')
    }
