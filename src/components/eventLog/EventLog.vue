@@ -1,9 +1,8 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import { searchEventLogInfo } from '@/api/eventLog';
-import JsonViewer from 'vue-json-viewer';
+import { useToast } from 'primevue/usetoast';
 import { utils } from '@/utils/utils';
-
 
 const serverTypes = ref([
 		{ name: '전체', code: 'ALL' },
@@ -24,12 +23,23 @@ const api = ref(null);
 const isData = ref(true);
 const errorMessage = ref('');
 const eventList = ref(null);
+const toast = useToast();
 
 onBeforeMount(() => {
 	if(import.meta.env.MODE === 'L') {
     searchTempInfo();
   }
 });
+
+const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+        // 성공 메시지
+        toast.add({ severity: 'success', summary: '복사완료', detail: '복사되었습니다.', life: 3000 });
+    }).catch(err => {
+        // 오류 
+        toast.add({ severity: 'error', summary: '복사실패', detail: '복사되지 않았습니다.', life: 3000 });
+    });
+};
 
 const valid = () => {
 	if(!serverType.value.code || !startDate.value || !endDate.value || (!csno.value && !ip.value)){
@@ -65,12 +75,12 @@ const search = async () => {
 		const response = await searchEventLogInfo(serverList, utils.formatIqrySrtDttm(startDate.value) , utils.formatIqryEndDttm(endDate.value), csno.value, ip.value,  '*' + api.value + "*");
 		loading.value = false;
 		isData.value = true;
-		eventList.value = [];
+		
 
 		eventList.value = response.hits.hits;
 		eventList.value.forEach((event) => {
-			event.value = event._source;	
-			if(event.value.hc){
+		event.value = event._source;	
+		if(event.value.hc){
 				event.time = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.srvrDt + ' ' + event.value.hc.event.res.parsed.hdr.srvrEltm : '';
 				event.csno = event.value.hc ? event.value.hc.csno : '';
 				event.os = event.value.hc ? event.value.hc.os.platform + ' ' + event.value.hc.os.version : '';
@@ -78,14 +88,8 @@ const search = async () => {
 				event.duration = event.value.hc ? event.value.hc.api.duration : '';
 				event.service = event.value.hc.service ? event.value.hc.service.name : '';
 				event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
-
-				try {
-						event.request =  event.value.hc && event.value.hc.event && event.value.hc.event.req ? JSON.parse(event.value.hc.event.req.message) : '';
-						event.response = event.value.hc && event.value.hc.event && event.value.hc.event.res ? JSON.parse(event.value.hc.event.res.message) : '';
-					} catch (error) {
-						event.request =  event.value.hc && event.value.hc.event && event.value.hc.event.req ? event.value.hc.event.req.message : '';
-						event.response = event.value.hc && event.value.hc.event && event.value.hc.event.res ? event.value.hc.event.res.message : '';
-					}
+				event.request =  event.value.hc && event.value.hc.event && event.value.hc.event.req ? event.value.hc.event.req.message : '';
+				event.response = event.value.hc && event.value.hc.event && event.value.hc.event.res ? event.value.hc.event.res.message : '';
 			}
 			event.instance = event.value.agent ? event.value.agent.name : '';
 			event.ip = event.value.source ? event.value.source.ip : '';
@@ -116,8 +120,8 @@ const searchTempInfo = () => {
 					event.resltcd = event.value.hc.event.res.parsed ? event.value.hc.event.res.parsed.hdr.rsltCd : '';
 
 					try {
-						event.request =  event.value.hc && event.value.hc.event ? JSON.parse(event.value.hc.event.req.message) : '';
-						event.response = event.value.hc && event.value.hc.event ? JSON.parse(event.value.hc.event.res.message) : '';
+						event.request =  event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
+						event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
 					} catch (error) {
 						event.request =  event.value.hc && event.value.hc.event ? event.value.hc.event.req.message : '';
 						event.response = event.value.hc && event.value.hc.event ? event.value.hc.event.res.message : '';
@@ -142,29 +146,7 @@ const searchTempInfo = () => {
 								<label for="serverType">시스템구분</label>
 							</span>
 						</div>
-					<!--<div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <MultiSelect id="multiselect" :options="instanceValues" v-model="instanceValue" optionLabel="name" :filter="true" :class="{ 'p-invalid': isInvalid }" >
-											<template #value="slotProps">
-                        <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">
-                            <span :class="'mr-2 flag flag-' + option.code.toLowerCase()" style="width: 18px; height: 12px" />
-                            <div>{{ option.name }}</div>
-                        </div>
-                        <template v-if="!slotProps.value || slotProps.value.length === 0">
-                            <div class="p-1">Select Countries</div>
-                        </template>
-                    </template>
-                    <template #option="slotProps">
-                        <div class="flex align-items-center">
-                            <span :class="'mr-2 flag flag-' + slotProps.option.code.toLowerCase()" style="width: 18px; height: 12px" />
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
-										
-										</MultiSelect>
-                    <label for="multiselect">instance</label>
-                </span>
-            </div>	-->	
+		
 					</div>
 					<div class="grid p-fluid">
 						<div class="col-12 md:col-3">
@@ -210,7 +192,7 @@ const searchTempInfo = () => {
 					:value="eventList"
 					:paginator="true"
 					class="p-datatable-gridlines"
-					:rows="20"
+					:rows="10"
 					dataKey="id"
 					:rowHover="true"
 					v-model:filters="filters"
@@ -253,7 +235,7 @@ const searchTempInfo = () => {
 					</Column>
 					<Column field="API명" header="API명" style="min-width: 12rem" >
 							<template #body="{ data }" >
-								<div class="surface-overlay overflow-hidden text-overflow-ellipsis" style="width:200px">{{ data.api }}</div>
+								{{ data.api }}
 							</template>
 					</Column>
 					<Column field="소요시간" header="소요시간" >
@@ -266,26 +248,22 @@ const searchTempInfo = () => {
 							{{ data.resltcd }}
 						</template>
 					</Column>
-					<Column field="request" header="request" >
+					<Column field="request" header="request" style="width: 100;">
 						<template #body="{ data }">
-							<Accordion >
-								<AccordionTab header="보기">
-										<p class="line-height-3 m-0">
-											<json-viewer :value="data.request" copyable></json-viewer>
-										</p>
-								</AccordionTab>
-						</Accordion>
+							<p class="line-height-3 m-0 p-3 white-space-nowrap overflow-hidden text-overflow-clip" style="width:500px">
+								<Toast />
+								<Button icon="pi pi-clone" @click="copyToClipboard(data.request)"></Button>
+								<span >{{ data.request }}</span>
+							</p>
 						</template>
 					</Column>
 					<Column field="response" header="response" >
 						<template #body="{ data }">
-							<Accordion >
-								<AccordionTab header="보기">
-										<p class="line-height-3 m-0">
-											<json-viewer :value="data.response" copyable></json-viewer>
-										</p>
-								</AccordionTab>
-						</Accordion>
+							<p class="line-height-3 m-0 p-3 white-space-nowrap overflow-hidden text-overflow-clip" style="width:500px">
+									<Toast />
+									<Button icon="pi pi-clone" @click="copyToClipboard(data.response)"></Button>
+									<span style="width: 100;">{{ data.response }}</span>
+								</p>
 						</template>
 					</Column>
 				</DataTable>
